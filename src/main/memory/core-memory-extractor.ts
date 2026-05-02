@@ -62,10 +62,11 @@ export class CoreMemoryExtractor {
         if (op !== 'add' && op !== 'update' && op !== 'upsert' && op !== 'delete') {
           return null;
         }
-        const key = typeof input.key === 'string' ? input.key.trim() : '';
+        const key = typeof input.key === 'string' ? input.key.trim().slice(0, 64) : '';
         if (!key) {
           return null;
         }
+        const rawValue = typeof input.value === 'string' ? input.value.trim() : null;
         return {
           op,
           category:
@@ -73,7 +74,7 @@ export class CoreMemoryExtractor {
               ? (input.category.trim() as CoreMemoryActionInput['category'])
               : undefined,
           key,
-          value: typeof input.value === 'string' ? input.value.trim() : null,
+          value: rawValue !== null ? rawValue.slice(0, 2000) : null,
         } satisfies CoreMemoryActionInput;
       })
       .filter((item): item is CoreMemoryActionInput => Boolean(item));

@@ -136,7 +136,11 @@ function assertSafeMemoryPaths(storageRoot: string, artifactsDir: string): void 
 }
 
 function escapeMemoryContextText(text: string): string {
-  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\r?\n(system|user|assistant)\s*:/gi, '\n[$1]:');
 }
 
 export class MemoryService {
