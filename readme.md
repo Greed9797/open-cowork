@@ -43,90 +43,140 @@ O Open Cowork é um app desktop gratuito e open source para Windows e macOS. Ele
 
 ## ⬇️ Download e Instalação
 
-### macOS
+> **Qual arquivo baixar?**
+>
+> - Você está no **Mac com chip M1, M2 ou M3**? → Baixe o `.dmg`
+> - Você está no **Windows** (qualquer versão recente)? → Baixe o `.exe`
 
-**Passo 1 — Baixe o DMG**
+Acesse a **[página de Releases](https://github.com/Greed9797/open-cowork/releases)**, clique na versão mais recente e baixe o arquivo correspondente ao seu sistema.
 
-Acesse a [página de Releases](https://github.com/Greed9797/open-cowork/releases) e baixe o arquivo `Open Cowork-<versão>-mac-arm64.dmg`.
+---
 
-**Passo 2 — Abra o DMG**
+### 🍎 Instalação no macOS (Apple Silicon — M1/M2/M3)
 
-Dê dois cliques no arquivo `.dmg`. Arraste o **Open Cowork** para a pasta **Aplicativos**.
+#### Passo 1 — Baixe o arquivo `.dmg`
 
-**Passo 3 — Libere o app no macOS (somente na primeira vez)**
+Na [página de Releases](https://github.com/Greed9797/open-cowork/releases), clique no arquivo que termina em `-mac-arm64.dmg`.
 
-Por não estar na Mac App Store, o macOS pode bloquear o app na primeira abertura. Para resolver:
+O arquivo tem cerca de **150–200 MB**. Aguarde o download terminar na pasta Downloads.
 
-1. Acesse **Configurações do Sistema → Privacidade e Segurança**
-2. Role até o aviso sobre o app bloqueado
-3. Clique em **Abrir Assim Mesmo**
+#### Passo 2 — Abra o instalador
 
-Ou execute no Terminal para liberar permanentemente:
+Dê dois cliques no arquivo `.dmg` que você acabou de baixar. Uma janela vai abrir mostrando o ícone do Open Cowork e uma seta apontando para a pasta **Aplicativos**.
+
+**Arraste o ícone do Open Cowork para a pasta Aplicativos.** Aguarde a cópia terminar (barra de progresso). Depois feche a janela e ejete o DMG (clique com botão direito no ícone do DMG na barra lateral do Finder → Ejetar).
+
+#### Passo 3 — Primeira abertura (liberar no macOS)
+
+Por não vir da Mac App Store, o macOS bloqueia o app na primeira vez. Você verá uma mensagem como _"Open Cowork não pode ser aberto porque é de um desenvolvedor não identificado"_.
+
+**Método 1 — Via Configurações do Sistema (recomendado):**
+
+1. Tente abrir o app normalmente (duplo clique nos Aplicativos)
+2. O macOS vai bloquear — clique em **OK** para fechar o aviso
+3. Abra **Configurações do Sistema** → **Privacidade e Segurança**
+4. Role para baixo até ver a mensagem sobre o Open Cowork
+5. Clique em **Abrir Assim Mesmo**
+6. Confirme com sua senha de usuário
+
+**Método 2 — Via Terminal (uma linha, permanente):**
+
+Abra o Terminal (use Spotlight: `Cmd + Espaço`, digite "Terminal") e cole o comando abaixo:
 
 ```bash
 xattr -d com.apple.quarantine /Applications/Open\ Cowork.app
 ```
 
----
+Pressione Enter. Depois abra o app normalmente pelos Aplicativos.
 
-### Windows
+#### Passo 4 — Verificar instalação
 
-**Passo 1 — Baixe o instalador**
+Abra o app. Você deve ver a tela de boas-vindas do Open Cowork. Se aparecer, a instalação foi concluída com sucesso.
 
-Acesse a [página de Releases](https://github.com/Greed9797/open-cowork/releases) e baixe o arquivo `Open Cowork-<versão>-win-x64.exe`.
-
-**Passo 2 — Execute o instalador**
-
-Dê dois cliques no `.exe`. Se o Windows SmartScreen bloquear, clique em **Mais informações → Executar assim mesmo**.
-
-**Passo 3 — Abra o app**
-
-O Open Cowork aparece no Menu Iniciar e na Área de Trabalho. Abra e siga para os [Primeiros Passos](#quick-start).
+> **Problemas comuns no macOS**
+>
+> - _"O arquivo está danificado"_ → Execute o Método 2 do Passo 3 acima.
+> - _O app abre mas fecha imediatamente_ → Verifique se seu Mac tem chip Apple Silicon (M1+). Este build não roda em Macs Intel.
+> - _Tela em branco_ → Aguarde 10–15 segundos. Na primeira abertura o app demora um pouco mais.
 
 ---
 
-### Compilar do Código-Fonte
+### 🪟 Instalação no Windows
 
-Para desenvolvedores que querem contribuir ou criar uma build personalizada:
+#### Passo 1 — Baixe o arquivo `.exe`
 
-```bash
-# Requisitos: Node.js 22+, npm 10+
-git clone https://github.com/Greed9797/open-cowork.git
-cd open-cowork
-npm install
-npm run rebuild     # recompila módulos nativos para o Electron
-npm run dev         # modo dev com hot-reload
-npm run build       # gera o instalador em /release
-```
+Na [página de Releases](https://github.com/Greed9797/open-cowork/releases), clique no arquivo que termina em `-win-x64.exe`.
+
+O arquivo tem cerca de **150–200 MB**. Aguarde o download terminar (pasta Downloads).
+
+#### Passo 2 — Execute o instalador
+
+Dê dois cliques no arquivo `.exe` baixado.
+
+**Se o Windows SmartScreen bloquear** (tela azul com "O Windows protegeu seu computador"):
+
+1. Clique em **Mais informações** (link azul pequeno abaixo do texto)
+2. Clique no botão **Executar assim mesmo** que aparece
+
+> Isso acontece porque o app não tem assinatura digital cara da Microsoft. É normal para apps open source. O código-fonte é público e auditável.
+
+#### Passo 3 — Conclua a instalação
+
+O instalador vai guiar você pelo processo:
+
+1. Aceite o contrato de licença (MIT — uso livre)
+2. Escolha a pasta de instalação (padrão: `C:\Users\<seu-nome>\AppData\Local\Programs\Open Cowork`)
+3. Clique em **Instalar**
+4. Aguarde a instalação terminar
+5. Clique em **Concluir** — o app abre automaticamente
+
+#### Passo 4 — Verificar instalação
+
+O Open Cowork aparece no **Menu Iniciar** e na **Área de Trabalho**. Abra e você verá a tela de boas-vindas.
+
+> **Problemas comuns no Windows**
+>
+> - _O instalador é bloqueado pelo antivírus_ → Adicione uma exceção para o arquivo `.exe` ou pasta de instalação no seu antivírus. O app é open source e seguro.
+> - _"VCRUNTIME140.dll não encontrado"_ → Instale o [Visual C++ Redistributable](https://aka.ms/vs/17/release/vc_redist.x64.exe) da Microsoft.
+> - _App não abre após instalação_ → Reinicie o computador e tente novamente.
 
 ---
 
 <a id="seguranca"></a>
 
-### 🔒 Configuração de Segurança (Sandbox)
+### 🔒 Configuração de Segurança — Sandbox (Opcional)
 
-O Open Cowork oferece isolamento em múltiplos níveis para proteger seu sistema:
+O sandbox isola completamente as operações da IA do restante do seu computador. **Recomendado para uso profissional.**
 
-| Nível          | Plataforma | Tecnologia | O que faz                                         |
-| -------------- | ---------- | ---------- | ------------------------------------------------- |
-| **Básico**     | Todos      | Path Guard | Acesso a arquivos restrito à pasta de trabalho    |
-| **Aprimorado** | Windows    | WSL2       | Todos os comandos executam dentro de uma VM Linux |
-| **Aprimorado** | macOS      | Lima       | Todos os comandos executam dentro de uma VM Linux |
+| Nível          | Plataforma | Tecnologia | O que protege                                    |
+| -------------- | ---------- | ---------- | ------------------------------------------------ |
+| **Básico**     | Todos      | Path Guard | IA acessa somente a pasta de trabalho escolhida  |
+| **Aprimorado** | Windows    | WSL2       | Comandos executam dentro de uma VM Linux isolada |
+| **Aprimorado** | macOS      | Lima       | Comandos executam dentro de uma VM Linux isolada |
 
-**macOS — ativar sandbox Lima (recomendado):**
+**macOS — instalar Lima (recomendado):**
+
+Abra o Terminal e execute:
 
 ```bash
 brew install lima
-# O Open Cowork detecta o Lima automaticamente e cria a VM 'claude-sandbox'
 ```
 
-**Windows — ativar sandbox WSL2 (recomendado):**
+> Se não tiver o Homebrew instalado: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
 
-Instale o WSL2 pela Microsoft: [https://docs.microsoft.com/pt-br/windows/wsl/install](https://docs.microsoft.com/pt-br/windows/wsl/install)
+Depois de instalar o Lima, reinicie o Open Cowork. Ele detecta automaticamente e cria a VM `claude-sandbox`.
 
-O Open Cowork detecta o WSL2 automaticamente — nenhuma configuração adicional é necessária.
+**Windows — instalar WSL2 (recomendado):**
 
-> Se nenhuma VM estiver disponível, o app usa apenas restrição por caminho de pasta.
+Abra o **PowerShell como Administrador** (clique com botão direito no Menu Iniciar → "Terminal do Windows (Admin)") e execute:
+
+```powershell
+wsl --install
+```
+
+Reinicie o computador quando solicitado. O Open Cowork detecta o WSL2 automaticamente na próxima abertura.
+
+> Sem sandbox instalado, o app ainda funciona normalmente com restrição por pasta.
 
 ---
 
@@ -136,38 +186,41 @@ O Open Cowork detecta o WSL2 automaticamente — nenhuma configuração adiciona
 
 ### Passo 1 — Obtenha uma Chave de API
 
-Você precisa de uma chave de API de um provedor de IA. Opções recomendadas:
+Você precisa de uma chave de API de um provedor de IA. Recomendamos:
 
-| Provedor       | Onde obter                                              | Base URL                     | Modelo recomendado            |
+| Provedor       | Onde criar conta                                        | Base URL                     | Modelo recomendado            |
 | -------------- | ------------------------------------------------------- | ---------------------------- | ----------------------------- |
 | **Anthropic**  | [console.anthropic.com](https://console.anthropic.com/) | _(deixe em branco — padrão)_ | `claude-sonnet-4-6`           |
 | **OpenRouter** | [openrouter.ai](https://openrouter.ai/)                 | `https://openrouter.ai/api`  | `anthropic/claude-sonnet-4-6` |
 
-> O OpenRouter permite usar vários provedores com uma única chave e cobrança por uso.
+> **Dica:** O OpenRouter aceita cartão de crédito brasileiro, cobra por uso e dá acesso a vários modelos com uma única chave. Boa opção para começar.
 
 ### Passo 2 — Configure o App
 
-1. Abra o app → clique no ícone **⚙️ Configurações** (canto inferior esquerdo)
-2. Cole sua **Chave de API**
-3. Defina a **Base URL** se estiver usando OpenRouter (veja tabela acima)
-4. Informe o nome do **Modelo**
-5. Clique em **Salvar**
+1. Abra o Open Cowork
+2. Clique no ícone **⚙️** no canto inferior esquerdo (Configurações)
+3. Cole sua **Chave de API** no campo correspondente
+4. Se usar OpenRouter: preencha o campo **Base URL** com `https://openrouter.ai/api`
+5. Preencha o campo **Modelo** com o nome do modelo (ex: `claude-sonnet-4-6`)
+6. Clique em **Salvar**
 
 ### Passo 3 — Escolha uma Pasta de Trabalho
 
-Clique em **Selecionar Pasta de Trabalho** e escolha uma pasta. A IA só pode ler e escrever arquivos dentro dessa pasta.
+Clique em **Selecionar Pasta de Trabalho** (ou no ícone de pasta). Escolha uma pasta onde a IA terá permissão de ler e escrever arquivos.
 
-> Crie uma pasta dedicada como `~/ai-workspace` — não aponte para toda a sua pasta pessoal.
+> Crie uma pasta dedicada como `Documentos/ai-workspace`. **Não aponte para Área de Trabalho ou pasta pessoal inteira.**
 
 ### Passo 4 — Comece a Trabalhar
 
-Digite um comando e pressione Enter. Exemplos:
+Digite um comando no campo de texto e pressione Enter. Exemplos para testar:
 
-> "Resuma todos os PDFs desta pasta em um único documento Word."
+> "Crie um arquivo chamado teste.txt com um texto de boas-vindas."
 
-> "Leia o arquivo vendas.xlsx e crie uma apresentação PowerPoint com 5 slides mostrando as principais tendências."
+> "Liste todos os arquivos desta pasta e me diga quais são os maiores."
 
-> "Organize os arquivos desta pasta em subpastas por tipo e data."
+> "Leia o arquivo vendas.xlsx e crie um PowerPoint com 5 slides resumindo os dados."
+
+> "Organize os arquivos desta pasta em subpastas separadas por tipo (imagens, documentos, vídeos)."
 
 ---
 
@@ -176,10 +229,10 @@ Digite um comando e pressione Enter. Exemplos:
 ## ✨ Funcionalidades
 
 - **Instalação em um clique** — instaladores prontos para Windows e macOS, sem precisar de terminal
-- **Suporte a múltiplos modelos** — Claude, APIs compatíveis com OpenAI, Gemini, DeepSeek, Ollama (local)
+- **Suporte a múltiplos modelos** — Claude, OpenAI, Gemini, DeepSeek, Ollama (local/offline)
 - **Sistema de Skills** — fluxos prontos para gerar PPTX, DOCX, XLSX, PDF
 - **Integração MCP** — conecte a navegadores, Notion e outros apps
-- **Automação de interface** — controle apps desktop via computer use (recomendado: Gemini Pro)
+- **Automação de interface** — controle apps desktop via computer use
 - **Controle remoto** — envie comandos via bot do Telegram
 - **Sandbox em VM** — WSL2 (Windows) e Lima (macOS) isolam todas as operações da IA
 - **Entrada multimodal** — arraste imagens e arquivos direto no chat
@@ -212,7 +265,7 @@ https://github.com/user-attachments/assets/75542c76-210f-414d-8182-1da988c148f2
 
 ## 🧰 Skills
 
-Skills são fluxos de trabalho prontos para a IA. Ficam em `.claude/skills/` e são carregadas automaticamente conforme a necessidade.
+Skills são fluxos de trabalho prontos. Ficam em `.claude/skills/` e são carregadas automaticamente.
 
 | Skill           | O que faz                                                |
 | --------------- | -------------------------------------------------------- |
@@ -264,25 +317,31 @@ open-cowork/
 Sim — licença MIT, totalmente open source. Você paga apenas pela API do modelo de IA que escolher (Anthropic, OpenRouter, etc.).
 
 **O app envia meus dados para algum servidor?**
-Não. O app roda inteiramente na sua máquina. O único tráfego externo são seus prompts indo para a API do provedor de IA que você configurou. Sem analytics, sem telemetria, sem rastreamento.
+Não. O app roda inteiramente na sua máquina. O único tráfego externo são seus prompts indo para a API do provedor de IA configurado. Sem analytics, sem telemetria, sem rastreamento.
+
+**Qual a diferença entre Anthropic e OpenRouter?**
+Anthropic é o criador do Claude — você paga direto para eles em dólar, sem intermediários. O OpenRouter é um agregador que aceita cartão brasileiro, cobra por uso e dá acesso a vários modelos (Claude, GPT, Gemini) com uma única chave.
 
 **O macOS está bloqueando o app — o que faço?**
-Execute no Terminal: `xattr -d com.apple.quarantine /Applications/Open\ Cowork.app`
+Abra o Terminal e execute: `xattr -d com.apple.quarantine /Applications/Open\ Cowork.app`. Depois abra o app normalmente.
+
+**O Windows bloqueou o instalador — é seguro?**
+Sim. O bloqueio do SmartScreen acontece porque o app não tem assinatura digital paga da Microsoft. O código-fonte é 100% público e auditável. Clique em "Mais informações" → "Executar assim mesmo".
 
 **O que é a pasta de trabalho?**
-É a pasta que a IA tem permissão para ler e escrever. Escolha uma pasta dedicada — a IA não consegue acessar arquivos fora dela.
+É a pasta que a IA tem permissão para ler e escrever. Fora dela, a IA não consegue acessar nada. Escolha uma pasta dedicada.
 
-**Posso usar um modelo local (Ollama)?**
-Sim. Nas configurações, defina a Base URL como `http://localhost:11434` e informe o nome do modelo Ollama. Certifique-se de que o Ollama está rodando localmente.
+**Posso usar um modelo local sem internet (Ollama)?**
+Sim. Nas configurações, defina a Base URL como `http://localhost:11434` e informe o nome do modelo. Certifique-se de que o Ollama está rodando localmente.
 
 **Como funciona o sandbox?**
-Com WSL2 (Windows) ou Lima (macOS) instalado, todos os comandos que a IA executa rodam dentro de uma VM Linux isolada. Mesmo que a IA cometa um erro, ela não consegue tocar nos arquivos do seu sistema fora da pasta de trabalho.
-
-**O que são Skills?**
-Skills são fluxos de trabalho prontos (PPTX, DOCX, XLSX, PDF). A IA as carrega automaticamente quando você descreve uma tarefa relacionada. Você também pode criar suas próprias skills.
+Com WSL2 (Windows) ou Lima (macOS) instalado, todos os comandos executam dentro de uma VM Linux isolada. Mesmo que a IA cometa um erro, não consegue afetar arquivos fora da pasta de trabalho.
 
 **Funciona no Linux?**
 Os instaladores prontos são apenas para Windows e macOS. Usuários Linux podem compilar do código-fonte.
+
+**Meu antivírus bloqueou o app no Windows — o que faço?**
+Adicione uma exceção para a pasta de instalação do Open Cowork no seu antivírus. O app é open source — o código-fonte está disponível publicamente para verificação.
 
 ---
 
