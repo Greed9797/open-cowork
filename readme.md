@@ -297,4 +297,8 @@ Pre-built installers are Windows and macOS only. Linux users can build from sour
 
 ## 📄 License
 
-MIT © Open Cowork Team
+MIT © Open Cowork Team — All rights reserved.
+
+---
+
+> This distribution is maintained by **W3 LABS**, based on the original work by the [Open Cowork](https://github.com/OpenCoworkAI/open-cowork) team. All intellectual property rights belong to the Open Cowork Team.
