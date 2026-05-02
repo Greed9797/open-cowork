@@ -51,12 +51,7 @@ import type {
 } from '../renderer/types';
 import { remoteManager, type AgentExecutor } from './remote/remote-manager';
 import { remoteConfigStore } from './remote/remote-config-store';
-import type {
-  GatewayConfig,
-  FeishuChannelConfig,
-  TelegramChannelConfig,
-  ChannelType,
-} from './remote/types';
+import type { GatewayConfig, TelegramChannelConfig, ChannelType } from './remote/types';
 import { startNavServer, stopNavServer } from './nav-server';
 import {
   ScheduledTaskManager,
@@ -880,6 +875,10 @@ app
         },
       ]);
       app.dock?.setMenu(dockMenu);
+      const dockIconPath = app.isPackaged
+        ? join(process.resourcesPath, 'icon.png')
+        : join(__dirname, '../../resources/icon.png');
+      app.dock?.setIcon(dockIconPath);
     }
 
     // macOS: send initial system theme to renderer
@@ -2322,16 +2321,6 @@ ipcMain.handle('remote.updateGatewayConfig', async (_event, config: Partial<Gate
   }
 });
 
-ipcMain.handle('remote.updateFeishuConfig', async (_event, config: FeishuChannelConfig) => {
-  try {
-    await remoteManager.updateFeishuConfig(config);
-    return { success: true };
-  } catch (error) {
-    logError('[Remote] Error updating Feishu config:', error);
-    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
-  }
-});
-
 ipcMain.handle('remote.updateTelegramConfig', async (_event, config: TelegramChannelConfig) => {
   try {
     await remoteManager.updateTelegramConfig(config);
@@ -2420,7 +2409,7 @@ ipcMain.handle('remote.getTunnelStatus', () => {
 
 ipcMain.handle('remote.getWebhookUrl', () => {
   try {
-    return remoteManager.getFeishuWebhookUrl();
+    return remoteManager.getWebhookUrl();
   } catch (error) {
     logError('[Remote] Error getting webhook URL:', error);
     return null;

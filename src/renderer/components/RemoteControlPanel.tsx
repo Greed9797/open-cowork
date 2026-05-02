@@ -1,6 +1,6 @@
 /**
  * Remote Control Settings Panel
- * Composes sub-components for Feishu/Lark bot remote control configuration.
+ * Composes sub-components for remote control configuration.
  */
 
 import { useState, useEffect } from 'react';
@@ -10,12 +10,10 @@ import { GatewayControlCard } from './remote/GatewayControlCard';
 import { PairingRequestsSection } from './remote/PairingRequestsSection';
 import { PairingGuideCard } from './remote/PairingGuideCard';
 import { ConfigStepNav } from './remote/ConfigStepNav';
-import { FeishuConfigStep } from './remote/FeishuConfigStep';
 import { TelegramConfigStep } from './remote/TelegramConfigStep';
 import { ConnectionConfigStep } from './remote/ConnectionConfigStep';
 import { AdvancedConfigStep } from './remote/AdvancedConfigStep';
 import { AuthorizedUsersSection } from './remote/AuthorizedUsersSection';
-import { QuickStartGuide } from './remote/QuickStartGuide';
 import type {
   GatewayStatus,
   PairedUser,
@@ -30,7 +28,7 @@ import type { ApiConfigSet } from '../types';
 const isElectron = typeof window !== 'undefined' && window.electronAPI !== undefined;
 
 export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
-  const { i18n, t } = useTranslation();
+  const { t } = useTranslation();
 
   // Remote state
   const [isLoading, setIsLoading] = useState(true);
@@ -41,12 +39,9 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
   const [isTogglingGateway, setIsTogglingGateway] = useState(false);
   const [error, setError] = useState<LocalizedBanner | null>(null);
   const [success, setSuccess] = useState<LocalizedBanner | null>(null);
-  const [activeStep, setActiveStep] = useState<ConfigStep>('feishu');
+  const [activeStep, setActiveStep] = useState<ConfigStep>('telegram');
 
   // Form state
-  const [feishuAppId, setFeishuAppId] = useState('');
-  const [feishuAppSecret, setFeishuAppSecret] = useState('');
-  const [feishuDmPolicy, setFeishuDmPolicy] = useState('pairing');
   const [telegramBotToken, setTelegramBotToken] = useState('');
   const [telegramDmPolicy, setTelegramDmPolicy] = useState('pairing');
   const [gatewayPort, setGatewayPort] = useState(18789);
@@ -91,7 +86,7 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
         window.electronAPI.config.get(),
       ]);
 
-      setConfig(configResult);
+      setConfig(configResult as unknown as RemoteConfig);
       setStatus(statusResult);
       setPairedUsers(usersResult);
       setPendingPairings(pairingsResult);
@@ -109,12 +104,6 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
         setGroqApiKey(configResult.gateway?.groqApiKey || '');
         setTunnelEnabled(configResult.gateway?.tunnel?.enabled || false);
         setNgrokAuthToken(configResult.gateway?.tunnel?.ngrok?.authToken || '');
-        if (configResult.channels?.feishu) {
-          setFeishuAppId(configResult.channels.feishu.appId || '');
-          setFeishuAppSecret(configResult.channels.feishu.appSecret || '');
-          setFeishuDmPolicy(configResult.channels.feishu.dm?.policy || 'pairing');
-          setUseLongConnection(configResult.channels.feishu.useWebSocket !== false);
-        }
         const telegramCfg = (
           configResult.channels as Record<
             string,
@@ -190,16 +179,6 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
             : { enabled: false, type: 'ngrok' },
       });
 
-      if (feishuAppId && feishuAppSecret) {
-        await window.electronAPI.remote.updateFeishuConfig({
-          type: 'feishu',
-          appId: feishuAppId,
-          appSecret: feishuAppSecret,
-          useWebSocket: useLongConnection,
-          dm: { policy: feishuDmPolicy as 'open' | 'pairing' | 'allowlist' },
-        });
-      }
-
       if (telegramBotToken) {
         await window.electronAPI.remote.updateTelegramConfig({
           type: 'telegram',
@@ -267,19 +246,9 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
     setTimeout(() => setSuccess(null), 2000);
   }
 
-  const isFeishuConfigured = !!(feishuAppId && feishuAppSecret);
   const isTelegramConfigured = !!telegramBotToken;
   const isConnectionConfigured =
     useLongConnection || (tunnelEnabled && !!ngrokAuthToken) || !!tunnelStatus?.connected;
-  const permissionSeparator = i18n.language.startsWith('zh') ? '、' : ', ';
-  const permissionScopes = [
-    'im:resource',
-    'im:message',
-    'im:message:send_as_bot',
-    'im:message.group_at_msg:readonly',
-    'im:message.p2p_msg:readonly',
-    'contact:user.base:readonly',
-  ];
 
   if (isLoading) {
     return (
@@ -310,22 +279,21 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
         pairedUsers={pairedUsers}
         pendingPairings={pendingPairings}
         isTogglingGateway={isTogglingGateway}
-        isFeishuConfigured={isFeishuConfigured}
+        isTelegramConfigured={isTelegramConfigured}
         onToggle={toggleGateway}
       />
 
-      {status?.running && feishuDmPolicy === 'pairing' && <PairingGuideCard />}
+      {status?.running && telegramDmPolicy === 'pairing' && <PairingGuideCard />}
 
       <PairingRequestsSection
         pendingPairings={pendingPairings}
-        showEmpty={status?.running && feishuDmPolicy === 'pairing'}
+        showEmpty={status?.running && telegramDmPolicy === 'pairing'}
         onApprove={approvePairing}
         onReject={rejectPairing}
       />
 
       <ConfigStepNav
         activeStep={activeStep}
-        isFeishuConfigured={isFeishuConfigured}
         isTelegramConfigured={isTelegramConfigured}
         isConnectionConfigured={isConnectionConfigured}
         onStepChange={setActiveStep}
@@ -333,16 +301,6 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
 
       {/* Configuration content */}
       <div className="p-6 rounded-[2rem] border border-border-subtle bg-background/60">
-        {activeStep === 'feishu' && (
-          <FeishuConfigStep
-            feishuAppId={feishuAppId}
-            feishuAppSecret={feishuAppSecret}
-            feishuDmPolicy={feishuDmPolicy}
-            onAppIdChange={setFeishuAppId}
-            onAppSecretChange={setFeishuAppSecret}
-            onDmPolicyChange={setFeishuDmPolicy}
-          />
-        )}
         {activeStep === 'telegram' && (
           <TelegramConfigStep
             botToken={telegramBotToken}
@@ -399,11 +357,6 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
       </div>
 
       <AuthorizedUsersSection pairedUsers={pairedUsers} onRevoke={revokePairing} />
-
-      <QuickStartGuide
-        permissionScopes={permissionScopes}
-        permissionSeparator={permissionSeparator}
-      />
     </div>
   );
 }

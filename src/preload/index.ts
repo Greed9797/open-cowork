@@ -34,7 +34,6 @@ import type {
   McpPresetsMap,
   RemoteConfig,
   GatewayConfig,
-  FeishuChannelConfig,
   TelegramChannelConfig,
   PairedUser,
   PairingRequest,
@@ -361,10 +360,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
       config: Partial<GatewayConfig>
     ): Promise<{ success: boolean; error?: string }> =>
       ipcRenderer.invoke('remote.updateGatewayConfig', config),
-    updateFeishuConfig: (
-      config: FeishuChannelConfig
-    ): Promise<{ success: boolean; error?: string }> =>
-      ipcRenderer.invoke('remote.updateFeishuConfig', config),
     updateTelegramConfig: (
       config: TelegramChannelConfig
     ): Promise<{ success: boolean; error?: string }> =>
@@ -622,9 +617,6 @@ declare global {
         setEnabled: (enabled: boolean) => Promise<{ success: boolean; error?: string }>;
         updateGatewayConfig: (
           config: Partial<GatewayConfig>
-        ) => Promise<{ success: boolean; error?: string }>;
-        updateFeishuConfig: (
-          config: FeishuChannelConfig
         ) => Promise<{ success: boolean; error?: string }>;
         updateTelegramConfig: (
           config: TelegramChannelConfig

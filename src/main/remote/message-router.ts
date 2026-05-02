@@ -447,7 +447,7 @@ export class MessageRouter {
     let cwd: string | undefined;
 
     if (message.content.type === 'text' && message.content.text) {
-      // Remove mention placeholders (Feishu uses @_user_N style keys)
+      // Remove mention placeholders (@_user_N style keys used by some channels)
       // Only strip internal placeholder-style mentions, not all @word patterns
       let text = message.content.text;
       text = text.replace(/@_user_\w+\s*/g, '').trim();

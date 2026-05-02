@@ -50,22 +50,16 @@ export interface RemoteConfig {
     };
   };
   channels: {
-    feishu?: {
-      appId: string;
-      appSecret: string;
-      useWebSocket?: boolean;
-      dm: {
-        policy: string;
-      };
-    };
-    slack?: {
+    telegram?: {
       botToken: string;
-      appToken?: string;
-      useSocketMode?: boolean;
+      webhookUrl?: string;
       dm: {
         policy: string;
+        allowFrom?: string[];
       };
+      groups?: Record<string, { requireMention: boolean; allowFrom?: string[] }>;
     };
+    [key: string]: Record<string, unknown> | undefined;
   };
 }
 
@@ -76,6 +70,6 @@ export interface TunnelStatus {
   error?: string;
 }
 
-export type ConfigStep = 'feishu' | 'telegram' | 'connection' | 'advanced';
+export type ConfigStep = 'telegram' | 'connection' | 'advanced';
 
 export type LocalizedBanner = { key?: string; text?: string | null };
