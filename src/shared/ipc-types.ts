@@ -83,6 +83,18 @@ export interface FeishuChannelConfig {
   defaultGroupSettings?: { requireMention: boolean };
 }
 
+/** Telegram channel configuration (mirrors TelegramChannelConfig in remote/types.ts). */
+export interface TelegramChannelConfig {
+  type: 'telegram';
+  botToken: string;
+  webhookUrl?: string;
+  dm: {
+    policy: 'open' | 'pairing' | 'allowlist';
+    allowFrom?: string[];
+  };
+  groups?: Record<string, { requireMention: boolean; allowFrom?: string[] }>;
+}
+
 /** Gateway authentication config. */
 export interface GatewayAuthConfig {
   mode: 'token' | 'allowlist' | 'pairing' | 'open';

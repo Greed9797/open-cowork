@@ -825,7 +825,15 @@
     "expiresIn": "Expira em {{time}}",
     "userRemoved": "Usuário removido",
     "revokeFailed": "Falha ao remover usuário",
-    "copied": "Copiado"
+    "copied": "Copiado",
+    "stepTelegram": "Telegram",
+    "telegramTitle": "Telegram Bot",
+    "telegramDesc": "Conecte um bot do Telegram para enviar e receber mensagens. Crie um bot com o @BotFather para obter seu token.",
+    "telegramBotToken": "Token do Bot",
+    "telegramBotTokenHint": "Obtenha seu token com o @BotFather no Telegram. Envie /newbot para criar um novo bot.",
+    "telegramPollingMode": "Modo long-polling",
+    "telegramPollingDesc": "O bot usa long-polling — não precisa de URL pública ou webhook. Funciona atrás de firewalls e NAT.",
+    "openBotFather": "Abrir @BotFather no Telegram"
   },
   "time": {
     "now": "agora"

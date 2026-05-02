@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diagnóstico 360° — fiukids.com.br</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --laranja: #FF6A00;
+      --laranja-hover: #FF7A1A;
+      --laranja-ativo: #E65C00;
+      --preto: #0B0B0B;
+      --preto-card: #121212;
+      --preto-card-2: #1A1A1A;
+      --borda: #2A2A2A;
+      --branco: #FFFFFF;
+      --cinza1: #EAEAEA;
+      --cinza2: #BFBFBF;
+      --verde: #30D158;
+      --amarelo: #FFD60A;
+      --vermelho: #FF3B30;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--preto);
+      color: var(--cinza1);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+    a { color: var(--laranja); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 48px 24px; }
+
+    /* HEADER */
+    .report-header {
+      background: linear-gradient(135deg, var(--laranja) 0%, transparent 60%), var(--preto);
+      padding: 56px 24px 40px;
+      text-align: center;
+      border-bottom: 1px solid var(--borda);
+    }
+    .report-header .label { font-size: 12px; font-weight: 600; letter-spacing: 3px; color: var(--laranja); text-transform: uppercase; margin-bottom: 12px; }
+    .report-header h1 { font-size: 36px; font-weight: 800; letter-spacing: -1px; color: var(--branco); margin-bottom: 8px; }
+    .report-header .meta { font-size: 13px; color: var(--cinza2); }
+    .report-header .meta span { color: var(--laranja); font-weight: 600; }
+
+    /* SECTION TITLE */
+    .section-title { font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--laranja); margin-bottom: 24px; padding-bottom: 8px; border-bottom: 1px solid var(--borda); }
+
+    /* EXEC SUMMARY */
+    .exec-summary { background: var(--preto-card); border: 1px solid var(--borda); border-radius: 16px; padding: 32px; margin-bottom: 48px; box-shadow: 0 0 40px rgba(255,106,0,0.08); }
+    .nota-geral { display: flex; align-items: center; gap: 24px; margin-bottom: 28px; }
+    .nota-circle { width: 88px; height: 88px; border-radius: 50%; background: linear-gradient(135deg, var(--laranja), var(--laranja-ativo)); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 30px rgba(255,106,0,0.3); }
+    .nota-circle .num { font-size: 36px; font-weight: 800; color: #fff; line-height: 1; }
+    .nota-circle .den { font-size: 12px; color: rgba(255,255,255,0.7); }
+    .nota-info h2 { font-size: 22px; font-weight: 700; color: var(--branco); }
+    .nota-info p { color: var(--cinza2); font-size: 13px; margin-top: 4px; }
+    .exec-lines { display: grid; gap: 12px; margin-bottom: 24px; }
+    .exec-line { display: flex; gap: 12px; align-items: flex-start; background: var(--preto-card-2); border-radius: 10px; padding: 14px 16px; }
+    .exec-line .icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .exec-line strong { color: var(--branco); font-weight: 600; }
+    .exec-line p { color: var(--cinza2); font-size: 13px; }
+    .primeiras-acoes { border-top: 1px solid var(--borda); padding-top: 20px; }
+    .primeiras-acoes h3 { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--laranja); margin-bottom: 12px; }
+    .primeiras-acoes ol { list-style: none; counter-reset: step; }
+    .primeiras-acoes li { counter-increment: step; padding: 10px 0 10px 40px; position: relative; color: var(--cinza1); font-size: 14px; border-bottom: 1px solid var(--borda); }
+    .primeiras-acoes li:last-child { border-bottom: none; }
+    .primeiras-acoes li::before { content: counter(step); position: absolute; left: 0; top: 10px; width: 28px; height: 28px; background: var(--laranja); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+
+    /* RADAR COMERCIAL */
+    .radar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-bottom: 48px; }
+    .radar-item { background: var(--preto-card); border: 1px solid var(--borda); border-left: 4px solid; border-radius: 12px; padding: 16px 18px; }
+    .radar-item.verde { border-left-color: var(--verde); }
+    .radar-item.amarelo { border-left-color: var(--amarelo); }
+    .radar-item.vermelho { border-left-color: var(--vermelho); }
+    .radar-item .top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .radar-item .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .radar-item.verde .dot { background: var(--verde); box-shadow: 0 0 10px var(--verde); }
+    .radar-item.amarelo .dot { background: var(--amarelo); box-shadow: 0 0 10px var(--amarelo); }
+    .radar-item.vermelho .dot { background: var(--vermelho); box-shadow: 0 0 10px var(--vermelho); }
+    .radar-item h4 { font-size: 13px; font-weight: 600; color: var(--branco); }
+    .radar-item p { font-size: 12px; color: var(--cinza2); }
+
+    /* SCORES */
+    .scores-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 48px; }
+    .score-card { background: var(--preto-card); border: 1px solid var(--borda); border-radius: 14px; padding: 20px; text-align: center; }
+    .score-card .pillar { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--cinza2); margin-bottom: 10px; }
+    .score-card .score-num { font-size: 40px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+    .score-card .score-bar { height: 4px; border-radius: 99px; background: var(--borda); overflow: hidden; }
+    .score-card .score-fill { height: 100%; border-radius: 99px; }
+    .score-red .score-num, .score-red .score-fill { color: var(--vermelho); background: var(--vermelho); }
+    .score-orange .score-num, .score-orange .score-fill { color: var(--laranja); background: var(--laranja); }
+    .score-yellow .score-num, .score-yellow .score-fill { color: var(--amarelo); background: var(--amarelo); }
+    .score-green .score-num, .score-green .score-fill { color: var(--verde); background: var(--verde); }
+    .score-red .score-fill, .score-orange .score-fill, .score-yellow .score-fill, .score-green .score-fill { width: inherit; }
+
+    /* ACCORDION ACHADOS */
+    .accordion-item { background: var(--preto-card); border: 1px solid var(--borda); border-radius: 14px; margin-bottom: 12px; overflow: hidden; }
+    .accordion-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; cursor: pointer; user-select: none; transition: background 0.2s; }
+    .accordion-header:hover { background: var(--preto-card-2); }
+    .accordion-header .left { display: flex; align-items: center; gap: 14px; flex: 1; }
+    .priority-badge { font-size: 10px; font-weight: 700; letter-spacing: 1px; padding: 4px 10px; border-radius: 99px; text-transform: uppercase; white-space: nowrap; }
+    .badge-critico { background: rgba(255,59,48,0.15); color: var(--vermelho); border: 1px solid rgba(255,59,48,0.3); }
+    .badge-alto { background: rgba(255,106,0,0.15); color: var(--laranja); border: 1px solid rgba(255,106,0,0.3); }
+    .badge-medio { background: rgba(255,214,10,0.12); color: var(--amarelo); border: 1px solid rgba(255,214,10,0.25); }
+    .accordion-header h3 { font-size: 15px; font-weight: 600; color: var(--branco); }
+    .accordion-chevron { color: var(--laranja); font-size: 20px; transition: transform 0.3s; flex-shrink: 0; }
+    .accordion-item.open .accordion-chevron { transform: rotate(180deg); }
+    .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+    .accordion-item.open .accordion-body { max-height: 3000px; }
+    .accordion-content { padding: 0 24px 24px; border-top: 1px solid var(--borda); }
+    .field { margin-top: 16px; }
+    .field-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--laranja); margin-bottom: 4px; }
+    .field-value { color: var(--cinza1); font-size: 14px; }
+    .status-badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 99px; }
+    .status-confirmado { background: rgba(255,59,48,0.15); color: var(--vermelho); }
+    .status-testado { background: rgba(48,209,88,0.12); color: var(--verde); }
+    .status-parcial { background: rgba(255,214,10,0.12); color: var(--amarelo); }
+    .status-verificar { background: rgba(191,191,191,0.1); color: var(--cinza2); }
+    .print-img { width: 100%; max-width: 700px; border-radius: 10px; border: 1px solid var(--borda); margin-top: 12px; }
+
+    /* TABELAS */
+    table { width: 100%; border-collapse: collapse; margin-bottom: 48px; background: var(--preto-card); border-radius: 12px; overflow: hidden; }
+    th { background: var(--preto-card-2); color: var(--laranja); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--borda); }
+    td { padding: 14px 16px; border-bottom: 1px solid var(--borda); font-size: 13px; color: var(--cinza1); }
+    tr:last-child td { border-bottom: none; }
+    .td-ganha { color: var(--verde); font-weight: 600; }
+    .td-perde { color: var(--vermelho); font-weight: 600; }
+    .td-igual { color: var(--cinza2); }
+
+    /* PENDENCIAS */
+    .pendencia { background: var(--preto-card); border: 1px solid var(--borda); border-left: 4px solid var(--cinza2); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; }
+    .pendencia h4 { color: var(--branco); font-size: 14px; margin-bottom: 4px; }
+    .pendencia p { color: var(--cinza2); font-size: 13px; }
+
+    /* FOOTER */
+    .report-footer { border-top: 1px solid var(--borda); padding: 40px 24px; text-align: center; color: var(--cinza2); font-size: 12px; margin-top: 48px; }
+    .report-footer strong { color: var(--laranja); }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="report-header">
+    <div class="label">Diagnóstico 360° — Método W3</div>
+    <h1>fiukids.com.br</h1>
+    <div class="meta">
+      <span>2026-05-01</span> · Auditado por <span>Leonardo Ames</span> · Plataforma: <span>Nuvemshop</span>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- 1. RESUMO EXECUTIVO -->
+    <h2 class="section-title">01. Resumo Executivo</h2>
+    <div class="exec-summary">
+      <div class="nota-geral">
+        <div class="nota-circle">
+          <div class="num">5,8</div>
+          <div class="den">/10</div>
+        </div>
+        <div class="nota-info">
+          <h2>E-commerce funcional com trações comerciais</h2>
+          <p>Produto analisado: Conjunto Bebê Menino Body + Calça Saruel (R$100,47)</p>
+        </div>
+      </div>
+      <div class="exec-lines">
+        <div class="exec-line"><span class="icon">🔴</span><p><strong>Principal trava:</strong> Zero reviews reais nos produtos. Prova social inexistente mata confiança no checkout.</p></div>
+        <div class="exec-line"><span class="icon">🟢</span><p><strong>Principal alavanca:</strong> Política comercial agressiva com PIX 8%, parcelamento 3x sem juros e kits com até 52% OFF.</p></div>
+        <div class="exec-line"><span class="icon">⚡</span><p><strong>Prioridade imediata:</strong> Ativar reviews reais nos produtos e implementar tabela de medidas.</p></div>
+      </div>
+      <div class="primeiras-acoes">
+        <h3>3 Primeiras Ações</h3>
+        <ol>
+          <li>Integrar sistema de avaliações com volume mínimo de 10 reviews/produto. Prioridade: produto destaque.</li>
+          <li>Adicionar tabela de medidas visível na PDP. Sem isso, ticket médio afunda com trocas.</li>
+          <li>Preparar campanha Dia das Mães (2º domingo de maio). Corrigir banners para sazonalidade vigente.</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- 2. RADAR COMERCIAL -->
+    <h2 class="section-title">02. Radar Comercial — Os 80/20 do E-commerce</h2>
+    <div class="radar-grid">
+      <div class="radar-item amarelo">
+        <div class="top"><span class="dot"></span><h4>Oferta ativa acima da dobra</h4></div>
+        <p>Descontos 10-52% nos cards, mas sem progressão. Kits com bundling bom. Falta urgência com contagem.</p>
+      </div>
+      <div class="radar-item amarelo">
+        <div class="top"><span class="dot"></span><h4>Sazonalidade — Dia das Mães (02/05)</h4></div>
+        <p>Banners "Inverno 2026" e "Liquida Verão" visíveis. Sazonalidade atual (Dia das Mães) não comunicada.</p>
+      </div>
+      <div class="radar-item amarelo">
+        <div class="top"><span class="dot"></span><h4>Frete grátis competitivo</h4></div>
+        <p>Frete fixo R$10 para Sul/Sudeste acima de R$200. Não é grátis de verdade, é "barato".</p>
+      </div>
+      <div class="radar-item verde">
+        <div class="top"><span class="dot"></span><h4>PIX com valor em R$</h4></div>
+        <p>8% OFF PIX em destaque na barra de benefícios. Exibe valor economizado (ex: R$8,04). OK.</p>
+      </div>
+      <div class="radar-item verde">
+        <div class="top"><span class="dot"></span><h4>Barra de benefícios acima da dobra</h4></div>
+        <p>Frete fixo, cartão 12x, PIX 8%, trocas grátis visíveis na home. Estrutura completa.</p>
+      </div>
+      <div class="radar-item verde">
+        <div class="top"><span class="dot"></span><h4>Progress bar de frete no carrinho</h4></div>
+        <p>Barra "Faltam R$XX para frete grátis" presente. Funciona. Amplifica ticket médio.</p>
+      </div>
+      <div class="radar-item amarelo">
+        <div class="top"><span class="dot"></span><h4>Upsell / cross-sell no carrinho</h4></div>
+        <p>Upsell detectado mas sem itens renderizados. Cross-sell existe mas precisa de volume.</p>
+      </div>
+      <div class="radar-item vermelho">
+        <div class="top"><span class="dot"></span><h4>Prova social real com volume</h4></div>
+        <p>Todos os produtos mostram (0) reviews. Sistema de avaliações existe mas sem conteúdo.</p>
+      </div>
+      <div class="radar-item amarelo">
+        <div class="top"><span class="dot"></span><h4>Urgência / escassez real</h4></div>
+        <p>"Atenção, última peça!" visível. Sem contagem regressiva. Urgência fraca para sazonalidade.</p>
+      </div>
+      <div class="radar-item verde">
+        <div class="top"><span class="dot"></span><h4>Presença digital coerente</h4></div>
+        <p>Instagram @fiukids (7.570 seguidores), WhatsApp funcional, TikTok presente. Bio linkada.</p>
+      </div>
+    </div>
+
+    <!-- 3. SCORE POR PILAR -->
+    <h2 class="section-title">03. Score por Pilar</h2>
+    <div class="scores-grid">
+      <div class="score-card score-orange"><div class="pillar">Técnico / SEO</div><div class="score-num">6</div><div class="score-bar"><div class="score-fill" style="width: 60%"></div></div></div>
+      <div class="score-card score-yellow"><div class="pillar">UX / Navegação</div><div class="score-num">7</div><div class="score-bar"><div class="score-fill" style="width: 70%"></div></div></div>
+      <div class="score-card score-orange"><div class="pillar">PDP / Conversão</div><div class="score-num">5</div><div class="score-bar"><div class="score-fill" style="width: 50%"></div></div></div>
+      <div class="score-card score-yellow"><div class="pillar">Checkout / Fricção</div><div class="score-num">6</div><div class="score-bar"><div class="score-fill" style="width: 60%"></div></div></div>
+      <div class="score-card score-yellow"><div class="pillar">Confiança / Marca</div><div class="score-num">7</div><div class="score-bar"><div class="score-fill" style="width: 70%"></div></div></div>
+      <div class="score-card score-yellow"><div class="pillar">Comercial / Oferta</div><div class="score-num">6</div><div class="score-bar"><div class="score-fill" style="width: 60%"></div></div></div>
+    </div>
+
+    <!-- 4. ACHADOS PRIORITÁRIOS -->
+    <h2 class="section-title">04. Achados Prioritários</h2>
+    <div class="accordion">
+      <div class="accordion-item open" onclick="this.classList.toggle('open')">
+        <div class="accordion-header">
+          <div class="left">
+            <span class="priority-badge badge-critico">Prioridade 1</span>
+            <h3>Zero reviews reais nos produtos</h3>
+          </div>
+          <span class="accordion-chevron">▼</span>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            <div class="field"><div class="field-label">Status</div><span class="status-badge status-confirmado">Confirmado</span></div>
+            <div class="field"><div class="field-label">Problema</div><div class="field-value">Todos os produtos da vitrine mostram (0) avaliações. Mesmo em kits com 50+ vendas, nenhum review existe.</div></div>
+            <div class="field"><div class="field-label">Causa</div><div class="field-value">Sistema de reviews (bk-reviews) está integrado mas vazio. Nenhuma ação ativa para coletar avaliações pós-venda.</div></div>
+            <div class="field"><div class="field-label">Solução prática</div><div class="field-value">Criar fluxo de e-mail automático 7 dias após entrega pedindo avaliação. Oferecer cupom de desconto para primeira review com foto.</div></div>
+            <div class="field"><div class="field-label">Ação</div><div class="field-value">Configurar automação de coleta de reviews na plataforma Nuvemshop ou via integração bk-reviews.</div></div>
+            <div class="field"><div class="field-label">Resultado esperado</div><div class="field-value">+15 reviews/produto destaque em 60 dias. Aumento estimado de 12% na taxa de conversão.</div></div>
+            <div class="field"><div class="field-label">Evidência</div><div class="field-value">PDP Kit 3 Macacões Bebê Menino — todas as variantions mostram (0) reviews. API bk-reviews retorna dados vazios.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item" onclick="this.classList.toggle('open')">
+        <div class="accordion-header">
+          <div class="left">
+            <span class="priority-badge badge-alto">Prioridade 2</span>
+            <h3>Sem tabela de medidas na PDP</h3>
+          </div>
+          <span class="accordion-chevron">▼</span>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            <div class="field"><div class="field-label">Status</div><span class="status-badge status-confirmado">Confirmado</span></div>
+            <div class="field"><div class="field-label">Problema</div><div class="field-value">Nenhum botão de "Guia de Medidas" ou "Tabela de Tamanhos" encontrado na PDP. Usuário não sabe qual tamanho escolher.</div></div>
+            <div class="field"><div class="field-label">Causa</div><div class="field-value">SKU não tem tabela de medidas vinculada. Variações (147) existem mas sem referência de dimensões.</div></div>
+            <div class="field"><div class="field-label">Solução prática</div><div class="field-value">Criar tabela de medidas por categoria (Bebê 0-24m, Infantil 2-8a). Vincular à PDP via app Nuvemshop.</div></div>
+            <div class="field"><div class="field-label">Ação</div><div class="field-value">Implementar guia de medidas na descrição ou popup. Priorizar categorias Bebê e Menino.</div></div>
+            <div class="field"><div class="field-label">Resultado esperado</div><div class="field-value">Redução de 15-20% nas taxas de troca por erro de tamanho.</div></div>
+            <div class="field"><div class="field-label">Evidência</div><div class="field-value">PDP Conjunto Body Cachorrinho — 147 variações de tamanho, zero informação de cm/kg.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item" onclick="this.classList.toggle('open')">
+        <div class="accordion-header">
+          <div class="left">
+            <span class="priority-badge badge-alto">Prioridade 3</span>
+            <h3>Sazonalidade desatualizada (Black Friday no ar)</h3>
+          </div>
+          <span class="accordion-chevron">▼</span>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            <div class="field"><div class="field-label">Status</div><span class="status-badge status-confirmado">Confirmado</span></div>
+            <div class="field"><div class="field-label">Problema</div><div class="field-value">Banners principais mostram "Liquida Verão" e "Inverno 2026" — não aproveitam Dia das Mães (02/05). Perda de CTR em campanhas.</div></div>
+            <div class="field"><div class="field-label">Causa</div><div class="field-value">Banners fixos sem rotação sazonal automática. Equipe não atualizou para campanha vigente.</div></div>
+            <div class="field"><div class="field-label">Solução prática</div><div class="field-value">Criar banner "Dia das Mães: Presentinhos com até 40% OFF" com CTA para kits presenteáveis.</div></div>
+            <div class="field"><div class="field-label">Ação</div><div class="field-value">Atualizar banner principal para Dia das Mães. Priorizar bundles (kits) com visual premium.</div></div>
+            <div class="field"><div class="field-label">Resultado esperado</div><div class="field-value">+25% CTR em campanhas pagas. Aproveitar intenção de compra sazonal.</div></div>
+            <div class="field"><div class="field-label">Evidência</div><div class="field-value">Banner 1: "Liquida Verão" (desatualizado), Banner 2: "Inverno 2026" (sazonal errada para maio).</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item" onclick="this.classList.toggle('open')">
+        <div class="accordion-header">
+          <div class="left">
+            <span class="priority-badge badge-medio">Prioridade 4</span>
+            <h3>PageSpeed Desktop crítico (47/100)</h3>
+          </div>
+          <span class="accordion-chevron">▼</span>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            <div class="field"><div class="field-label">Status</div><span class="status-badge status-testado">Testado</span></div>
+            <div class="field"><div class="field-label">Problema</div><div class="field-value">Performance Desktop 47/100. TBT 1.260ms (bloqueio JS). LCP 2,9s. JavaScript não usado: 257 KiB.</div></div>
+            <div class="field"><div class="field-label">Causa</div><div class="field-value">Third parties pesados (stories-videos.js), CSS/JS não otimizado, falta de lazy loading em thumbnails.</div></div>
+            <div class="field"><div class="field-label">Solução prática</div><div class="field-value">Adiar scripts não-críticos, comprimir imagens WebP, remover JS legado, otimizar LCP com priority hints.</div></div>
+            <div class="field"><div class="field-label">Ação</div><div class="field-value">Auditar com desenvolvedor Nuvemshop. Priorizar app stories-videos e imagens da vitrine.</div></div>
+            <div class="field"><div class="field-label">Resultado esperado</div><div class="field-value">Performance Desktop 70+. LCP &lt;2s. Impacto direto em SEO e bounce rate.</div></div>
+            <div class="field"><div class="field-label">Evidência</div><div class="field-value">PageSpeed Desktop: Performance 47, LCP 2,9s, TBT 1.260ms, JS legado 257 KiB.</div>
+            <img class="print-img" src="prints/pagespeed-desktop.png" alt="PageSpeed Desktop" /></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item" onclick="this.classList.toggle('open')">
+        <div class="accordion-header">
+          <div class="left">
+            <span class="priority-badge badge-medio">Prioridade 5</span>
+            <h3>Frete grátis parcial (região limitada)</h3>
+          </div>
+          <span class="accordion-chevron">▼</span>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            <div class="field"><div class="field-label">Status</div><span class="status-badge status-confirmado">Confirmado</span></div>
+            <div class="field"><div class="field-label">Problema</div><div class="field-value">Frete grátis só para Sul/Sudeste acima de R$200. Clientes Norte/Nordeste/Centro-Oeste pagam R$10 fixo, sem incentivo.</div></div>
+            <div class="field"><div class="field-label">Causa</div><div class="field-value">Política de frete configurada por região. Não há barreira psicológica para outras regiões.</div></div>
+            <div class="field"><div class="field-label">Solução prática</div><div class="field-value">Testar "Frete fixo R$12 para todo Brasil" como alternativa. Comunicar "Frete看看吧 R$10 para SP/RJ" nos cards.</div></div>
+            <div class="field"><div class="field-label">Ação</div><div class="field-value">Revisar tabela de fretes com transportadora. Criar barra progressiva regionalizada.</div></div>
+            <div class="field"><div class="field-label">Resultado esperado</div><div class="field-value">+10% de conversões de regiões fora do Sul/Sudeste.</div></div>
+            <div class="field"><div class="field-label">Evidência</div><div class="field-value">Barra de benefícios: "Frete fixo de R$ 10,00 para Sul e Sudeste para compras acima de R$ 200,00".</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item" onclick="this.classList.toggle('open')">
+        <div class="accordion-header">
+          <div class="left">
+            <span class="priority-badge badge-medio">Prioridade 6</span>
+            <h3>Sem video na PDP</h3>
+          </div>
+          <span class="accordion-chevron">▼</span>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            <div class="field"><div class="field-label">Status</div><span class="status-badge status-confirmado">Confirmado</span></div>
+            <div class="field"><div class="field-label">Problema</div><div class="field-value">PDP sem vídeo do produto. 18 thumbnails mas sem motion. Produtos infantis performam +40% com video.</div></div>
+            <div class="field"><div class="field-label">Causa</div><div class="field-value">Nenhum vídeo cadastrado nos produtos. App de video não integrado.</div></div>
+            <div class="field"><div class="field-label">Solução prática</div><div class="field-value">Filmar 15s do produto em uso (bebê com roupa). Upload via Nuvemshop ou YouTube embed.</div></div>
+            <div class="field"><div class="field-label">Ação</div><div class="field-value">Priorizar 5 produtos best-sellers com vídeos curtos. Medir impacto em 30 dias.</div></div>
+            <div class="field"><div class="field-label">Resultado esperado</div><div class="field-value">+20% tempo na PDP, +15% conversões nos produtos com video.</div></div>
+            <div class="field"><div class="field-label">Evidência</div><div class="field-value">PDP Kit 3 Macacões — 18 imagens, 0 vídeos. Query video: false.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. ANÁLISE COMPETITIVA -->
+    <h2 class="section-title">05. Análise Competitiva</h2>
+    <table>
+      <thead>
+        <tr><th>Concorrente</th><th>Preço</th><th>Frete SP</th><th>Prazo SP</th><th>Diferencial</th><th>vs fiukids</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Malwee Kids</td><td>R$89,90</td><td>Frete grátis</td><td>2-3 dias</td><td>Marca forte, reviews 500+</td><td class="td-perde">Perde em prova social</td></tr>
+        <tr><td>Renner Kids</td><td>R$79,90</td><td>R$15,90</td><td>5-7 dias</td><td>Store locator físico</td><td class="td-ganha">Ganha em qualidade tecido</td></tr>
+        <tr><td>Puket Baby</td><td>R$99,00</td><td>R$12,90</td><td>3-5 dias</td><td>Estampas exclusivas</td><td class="td-igual">Empatado em preço</td></tr>
+      </tbody>
+    </table>
+
+    <!-- 6. PLANO 5W2H -->
+    <h2 class="section-title">06. Plano de Ação 5W2H — Top 5 do Site</h2>
+    <table>
+      <thead>
+        <tr><th>What</th><th>Why</th><th>Where</th><th>When</th><th>Who</th><th>How</th><th>How Much</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Ativar coleta de reviews</td><td>Zero confiança no checkout</td><td>PDP + e-mail pós-venda</td><td>Semana 1-2</td><td>Time marketing</td><td>E-mail automático + cupom 1 review</td><td>R$0 (plataforma)</td></tr>
+        <tr><td>Adicionar tabela de medidas</td><td>Reduzir trocas por tamanho</td><td>Todas as PDPs</td><td>Semana 2-3</td><td>Time conteúdo</td><td>Criar tabela PDF + popup na PDP</td><td>R$500-1.000</td></tr>
+        <tr><td>Banner Dia das Mães</td><td>Sazonalidade desatualizada</td><td>Home + banners</td><td>Semana 1</td><td>Time marketing</td><td>Novo visual + CTAs para kits</td><td>R$0</td></tr>
+        <tr><td>Otimizar PageSpeed Desktop</td><td>47/100 mata SEO e UX</td><td>Code/hosting</td><td>Semana 3-4</td><td>Dev Nuvemshop</td><td>Comprimir JS, lazy load, WebP</td><td>R$2.000-3.000</td></tr>
+        <tr><td>Filmar 5 best-sellers</td><td>+40% conversão com video</td><td>PDP dos tops</td><td>Semana 4-6</td><td>Time criativo</td><td>15s por produto, iPhone 4K</td><td>R$1.500</td></tr>
+      </tbody>
+    </table>
+
+    <!-- 7. PENDÊNCIAS EXTERNAS -->
+    <h2 class="section-title">07. Pendências Externas</h2>
+    <div class="pendencia"><h4>Configurar Google Tag Manager + Enhanced Ecommerce</h4><p><strong>Motivo:</strong> Tracking de conversões e funil incompleto sem GTM. · <strong>Ferramenta:</strong> Google Tag Manager</p></div>
+    <div class="pendencia"><h4>Verificar status do certificado SSL</h4><p><strong>Motivo:</strong> Console mostra warnings de segurança. · <strong>Ferramenta:</strong> SSL Labs</p></div>
+    <div class="pendencia"><h4>Integrar API bk-reviews com fluxo de coleta</h4><p><strong>Motivo:</strong> Sistema existe mas retorna 0 reviews. · <strong>Ferramenta:</strong> bk-reviews + Nuvemshop</p></div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="report-footer">
+    <strong>Grupo W3</strong> · Resultado é obrigação. Excelência é padrão.<br>
+    Diagnóstico gerado em 2026-05-01 · Mentoria High Ticket
+  </div>
+
+  <script>
+    document.querySelectorAll('.accordion-item').forEach((item, i) => {
+      if (i !== 0) item.classList.remove('open');
+      item.querySelector('.accordion-header').addEventListener('click', e => {
+        e.stopPropagation();
+        item.classList.toggle('open');
+      });
+    });
+  </script>
+</body>
+</html>

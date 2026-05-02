@@ -35,6 +35,7 @@ import type {
   RemoteConfig,
   GatewayConfig,
   FeishuChannelConfig,
+  TelegramChannelConfig,
   PairedUser,
   PairingRequest,
   RemoteSessionMapping,
@@ -364,6 +365,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
       config: FeishuChannelConfig
     ): Promise<{ success: boolean; error?: string }> =>
       ipcRenderer.invoke('remote.updateFeishuConfig', config),
+    updateTelegramConfig: (
+      config: TelegramChannelConfig
+    ): Promise<{ success: boolean; error?: string }> =>
+      ipcRenderer.invoke('remote.updateTelegramConfig', config),
     getPairedUsers: (): Promise<PairedUser[]> => ipcRenderer.invoke('remote.getPairedUsers'),
     getPendingPairings: (): Promise<PairingRequest[]> =>
       ipcRenderer.invoke('remote.getPendingPairings'),
@@ -620,6 +625,9 @@ declare global {
         ) => Promise<{ success: boolean; error?: string }>;
         updateFeishuConfig: (
           config: FeishuChannelConfig
+        ) => Promise<{ success: boolean; error?: string }>;
+        updateTelegramConfig: (
+          config: TelegramChannelConfig
         ) => Promise<{ success: boolean; error?: string }>;
         getPairedUsers: () => Promise<PairedUser[]>;
         getPendingPairings: () => Promise<PairingRequest[]>;
