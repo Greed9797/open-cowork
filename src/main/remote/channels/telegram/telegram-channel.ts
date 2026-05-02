@@ -1,5 +1,6 @@
 import { ChannelBase, withRetry } from '../channel-base';
 import { log, logError, logWarn } from '../../../utils/logger';
+import { remoteConfigStore } from '../../remote-config-store';
 import type {
   TelegramChannelConfig,
   RemoteMessage,
@@ -160,23 +161,26 @@ export class TelegramChannel extends ChannelBase {
     // Handle voice/audio messages via Groq transcription
     const audioFile = msg.voice ?? msg.audio;
     if (audioFile) {
-      if (!this.groqApiKey) {
-        const chatIdStr = chatId;
+      // Read key at runtime so changes saved after channel start are picked up
+      const groqKey =
+        remoteConfigStore.getAll().gateway.groqApiKey?.trim() || this.groqApiKey?.trim();
+      if (!groqKey) {
         await this.api('sendMessage', {
-          chat_id: chatIdStr,
-          text: '⚠️ Audio transcription is not configured. Please add a Groq API key in Remote Control → Advanced settings.',
+          chat_id: chatId,
+          text: '⚠️ Audio transcription not configured. Add a Groq API key in Remote Control → Advanced settings.',
         });
         return;
       }
       try {
         log('[Telegram] Transcribing audio file_id:', audioFile.file_id);
-        messageText = await this.transcribeAudio(audioFile.file_id);
+        messageText = await this.transcribeAudio(audioFile.file_id, groqKey);
         log('[Telegram] Transcription result:', messageText?.slice(0, 100));
       } catch (err) {
-        logError('[Telegram] Audio transcription failed:', err);
+        const errMsg = err instanceof Error ? err.message : String(err);
+        logError('[Telegram] Audio transcription failed:', errMsg);
         await this.api('sendMessage', {
           chat_id: chatId,
-          text: '⚠️ Audio transcription failed. Please try again or send text.',
+          text: `⚠️ Transcription failed: ${errMsg.slice(0, 300)}\n\nPlease try again or send text.`,
         });
         return;
       }
@@ -204,7 +208,7 @@ export class TelegramChannel extends ChannelBase {
 
   // ─── Audio Transcription ─────────────────────────────────────────────────────
 
-  private async transcribeAudio(fileId: string): Promise<string> {
+  private async transcribeAudio(fileId: string, groqKey: string): Promise<string> {
     // Step 1: Get file path from Telegram
     const fileInfo = await this.api<{ file_path: string }>('getFile', { file_id: fileId });
     const fileUrl = `${TELEGRAM_API}/file/bot${this.config.botToken.trim()}/${fileInfo.file_path}`;
@@ -212,29 +216,59 @@ export class TelegramChannel extends ChannelBase {
     // Step 2: Download audio bytes
     const audioRes = await fetch(fileUrl);
     if (!audioRes.ok) {
-      throw new Error(`Failed to download audio: HTTP ${audioRes.status}`);
+      throw new Error(`Failed to download Telegram audio: HTTP ${audioRes.status}`);
     }
-    const audioBuffer = await audioRes.arrayBuffer();
+    const audioBuffer = Buffer.from(await audioRes.arrayBuffer());
 
-    // Step 3: Determine filename/extension from file path
-    const ext = fileInfo.file_path.split('.').pop() || 'ogg';
+    // Step 3: Normalize extension — Telegram voice messages use .oga (Opus in OGG container)
+    // Groq Whisper accepts 'ogg' but not 'oga'; both are the same container.
+    const rawExt = (fileInfo.file_path.split('.').pop() || 'ogg').toLowerCase();
+    const ext = rawExt === 'oga' ? 'ogg' : rawExt;
     const filename = `voice.${ext}`;
 
-    // Step 4: Send to Groq Whisper
-    const form = new FormData();
-    form.append('file', new Blob([audioBuffer], { type: `audio/${ext}` }), filename);
-    form.append('model', 'whisper-large-v3-turbo');
-    form.append('response_format', 'text');
+    // Step 4: Build multipart form using Node.js-compatible boundary approach
+    const boundary = `----FormBoundary${Math.random().toString(36).slice(2)}`;
+    const CRLF = '\r\n';
+    const parts: Buffer[] = [];
+
+    const addField = (name: string, value: string) => {
+      parts.push(
+        Buffer.from(
+          `--${boundary}${CRLF}` +
+            `Content-Disposition: form-data; name="${name}"${CRLF}${CRLF}` +
+            `${value}${CRLF}`
+        )
+      );
+    };
+
+    addField('model', 'whisper-large-v3-turbo');
+    addField('response_format', 'text');
+
+    // File part
+    parts.push(
+      Buffer.from(
+        `--${boundary}${CRLF}` +
+          `Content-Disposition: form-data; name="file"; filename="${filename}"${CRLF}` +
+          `Content-Type: audio/${ext}${CRLF}${CRLF}`
+      )
+    );
+    parts.push(audioBuffer);
+    parts.push(Buffer.from(`${CRLF}--${boundary}--${CRLF}`));
+
+    const body = Buffer.concat(parts);
 
     const groqRes = await fetch(GROQ_API, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${this.groqApiKey}` },
-      body: form,
+      headers: {
+        Authorization: `Bearer ${groqKey}`,
+        'Content-Type': `multipart/form-data; boundary=${boundary}`,
+      },
+      body,
     });
 
     if (!groqRes.ok) {
       const errText = await groqRes.text().catch(() => '');
-      throw new Error(`Groq transcription HTTP ${groqRes.status}: ${errText.slice(0, 200)}`);
+      throw new Error(`Groq HTTP ${groqRes.status}: ${errText.slice(0, 300)}`);
     }
 
     const transcription = await groqRes.text();
