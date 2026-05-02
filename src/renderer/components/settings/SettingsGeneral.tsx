@@ -6,7 +6,15 @@ export function SettingsGeneral() {
   const { i18n, t } = useTranslation();
   const settings = useAppStore((s) => s.settings);
   const updateSettings = useAppStore((s) => s.updateSettings);
-  const currentLang = i18n.language.startsWith('zh') ? 'zh' : 'en';
+
+  const getCurrentLang = () => {
+    const lang = i18n.language;
+    if (lang.startsWith('zh')) return 'zh';
+    if (lang.startsWith('pt')) return 'pt';
+    return 'en';
+  };
+  const currentLang = getCurrentLang();
+
   const [appVer, setAppVer] = useState('');
   useEffect(() => {
     try {
@@ -21,6 +29,7 @@ export function SettingsGeneral() {
   const languages = [
     { code: 'en', nativeName: 'English' },
     { code: 'zh', nativeName: '中文' },
+    { code: 'pt', nativeName: 'Português' },
   ];
 
   const themeOptions = [

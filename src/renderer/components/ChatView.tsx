@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import {
   useActiveSessionId,
@@ -13,7 +14,7 @@ import {
 import { useAppStore } from '../store';
 import { useIPC } from '../hooks/useIPC';
 import { MessageCard } from './MessageCard';
-import type { Message, ContentBlock } from '../types';
+import type { Message, ContentBlock, Skill } from '../types';
 import { Send, Square, Plus, Loader2, Plug, X, Clock } from 'lucide-react';
 
 type AttachedFile = {
@@ -51,6 +52,15 @@ export function ChatView() {
   >([]);
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [skills, setSkills] = useState<Skill[]>([]);
+  const [slashMenuOpen, setSlashMenuOpen] = useState(false);
+  const [slashQuery, setSlashQuery] = useState('');
+  const [slashMenuIndex, setSlashMenuIndex] = useState(0);
+  const [slashMenuPos, setSlashMenuPos] = useState<{
+    bottom: number;
+    left: number;
+    width: number;
+  } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -250,6 +260,22 @@ export function ChatView() {
     textareaRef.current?.focus();
   }, [activeSessionId]);
 
+  const skillsStorageChangedAt = useAppStore((s) => s.skillsStorageChangedAt);
+  useEffect(() => {
+    if (isElectron && window.electronAPI?.skills) {
+      window.electronAPI.skills
+        .getAll()
+        .then(setSkills)
+        .catch(() => {});
+    }
+  }, [isElectron, skillsStorageChangedAt]);
+
+  const slashFiltered = useMemo(() => {
+    if (!slashMenuOpen) return [];
+    const q = slashQuery.toLowerCase();
+    return skills.filter((s) => s.enabled && s.name.toLowerCase().includes(q)).slice(0, 8);
+  }, [slashMenuOpen, slashQuery, skills]);
+
   // Handle paste event for images
   const handlePaste = async (e: React.ClipboardEvent) => {
     const items = e.clipboardData?.items;
@@ -397,6 +423,23 @@ export function ChatView() {
       updated.splice(index, 1);
       return updated;
     });
+  };
+
+  const applySlashSkill = (skill: Skill) => {
+    const ta = textareaRef.current;
+    if (!ta) return;
+    const cur = ta.selectionStart ?? prompt.length;
+    const before = prompt.slice(0, cur);
+    const after = prompt.slice(cur);
+    const replaced = before.replace(/(?<=^|\s)\/\S*$/, `/${skill.name} `);
+    const newPrompt = replaced + after;
+    setPrompt(newPrompt);
+    setSlashMenuOpen(false);
+    setTimeout(() => {
+      ta.focus();
+      const pos = replaced.length;
+      ta.setSelectionRange(pos, pos);
+    }, 0);
   };
 
   const handleFileSelect = async () => {
@@ -730,6 +773,43 @@ export function ChatView() {
             onDrop={handleDrop}
             className="relative w-full"
           >
+            {/* Slash skill menu — rendered via portal to escape overflow-hidden */}
+            {slashMenuOpen &&
+              slashFiltered.length > 0 &&
+              slashMenuPos &&
+              createPortal(
+                <div
+                  style={{
+                    position: 'fixed',
+                    bottom: slashMenuPos.bottom,
+                    left: slashMenuPos.left,
+                    width: slashMenuPos.width,
+                    zIndex: 9999,
+                  }}
+                  className="bg-background border border-border rounded-2xl shadow-lg overflow-hidden"
+                >
+                  {slashFiltered.map((skill, idx) => (
+                    <button
+                      key={skill.id}
+                      type="button"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        applySlashSkill(skill);
+                      }}
+                      className={`w-full flex items-start gap-3 px-4 py-2.5 text-left transition-colors ${idx === slashMenuIndex ? 'bg-accent/10 text-accent' : 'hover:bg-surface-hover text-text-primary'}`}
+                    >
+                      <span className="text-sm font-medium shrink-0">/{skill.name}</span>
+                      {skill.description && (
+                        <span className="text-xs text-text-muted truncate">
+                          {skill.description}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>,
+                document.body
+              )}
+
             {/* Image previews */}
             {pastedImages.length > 0 && (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 mb-3">
@@ -792,7 +872,29 @@ export function ChatView() {
               <textarea
                 ref={textareaRef}
                 value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setPrompt(val);
+                  const cur = e.target.selectionStart ?? val.length;
+                  const textBeforeCursor = val.slice(0, cur);
+                  const slashMatch = textBeforeCursor.match(/(?:^|\s)\/(\S*)$/);
+                  if (slashMatch) {
+                    setSlashQuery(slashMatch[1]);
+                    setSlashMenuOpen(true);
+                    setSlashMenuIndex(0);
+                    if (textareaRef.current) {
+                      const rect = textareaRef.current.getBoundingClientRect();
+                      setSlashMenuPos({
+                        bottom: window.innerHeight - rect.top + 8,
+                        left: rect.left,
+                        width: rect.width,
+                      });
+                    }
+                  } else {
+                    setSlashMenuOpen(false);
+                    setSlashMenuPos(null);
+                  }
+                }}
                 onCompositionStart={() => {
                   isComposingRef.current = true;
                 }}
@@ -801,6 +903,30 @@ export function ChatView() {
                 }}
                 onPaste={handlePaste}
                 onKeyDown={(e) => {
+                  if (slashMenuOpen && slashFiltered.length > 0) {
+                    if (e.key === 'ArrowDown') {
+                      e.preventDefault();
+                      setSlashMenuIndex((i) => (i + 1) % slashFiltered.length);
+                      return;
+                    }
+                    if (e.key === 'ArrowUp') {
+                      e.preventDefault();
+                      setSlashMenuIndex(
+                        (i) => (i - 1 + slashFiltered.length) % slashFiltered.length
+                      );
+                      return;
+                    }
+                    if (e.key === 'Enter' || e.key === 'Tab') {
+                      e.preventDefault();
+                      applySlashSkill(slashFiltered[slashMenuIndex]);
+                      return;
+                    }
+                    if (e.key === 'Escape') {
+                      e.preventDefault();
+                      setSlashMenuOpen(false);
+                      return;
+                    }
+                  }
                   // Enter to send, Shift+Enter for new line
                   if (e.key === 'Enter' && !e.shiftKey) {
                     if (e.nativeEvent.isComposing || isComposingRef.current || e.keyCode === 229) {

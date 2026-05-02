@@ -11,6 +11,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { useApiConfigState } from '../../hooks/useApiConfigState';
+import { useDualModelConfig } from '../../hooks/useDualModelConfig';
 import { ApiConfigSetManager } from '../ApiConfigSetManager';
 import { CommonProviderSetupsCard, GuidanceInlineHint } from '../ProviderGuidance';
 import ApiDiagnosticsPanel from '../ApiDiagnosticsPanel';
@@ -24,6 +25,7 @@ interface ModelOptionItem {
 
 export function SettingsAPI() {
   const { t } = useTranslation();
+  const dual = useDualModelConfig();
   const {
     provider,
     customProtocol,
@@ -128,22 +130,22 @@ export function SettingsAPI() {
         </label>
         <p className="text-xs leading-5 text-text-muted">{t('api.providerDescription')}</p>
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2">
-          {(['openrouter', 'anthropic', 'openai', 'gemini', 'ollama', 'custom'] as const).map(
-            (p) => (
-              <button
-                key={p}
-                onClick={() => changeProvider(p)}
-                disabled={isLoadingConfig}
-                className={`px-3 py-2 rounded-lg text-sm transition-colors border ${
-                  provider === p
-                    ? 'border-accent bg-accent/10 text-accent font-medium'
-                    : 'border-border-muted text-text-secondary hover:border-border hover:text-text-primary disabled:opacity-50'
-                }`}
-              >
-                {p === 'custom' ? t('api.moreModels') : presets?.[p]?.name || p}
-              </button>
-            )
-          )}
+          {(
+            ['openrouter', 'anthropic', 'openai', 'gemini', 'ollama', 'nvidia', 'custom'] as const
+          ).map((p) => (
+            <button
+              key={p}
+              onClick={() => changeProvider(p)}
+              disabled={isLoadingConfig}
+              className={`px-3 py-2 rounded-lg text-sm transition-colors border ${
+                provider === p
+                  ? 'border-accent bg-accent/10 text-accent font-medium'
+                  : 'border-border-muted text-text-secondary hover:border-border hover:text-text-primary disabled:opacity-50'
+              }`}
+            >
+              {p === 'custom' ? t('api.moreModels') : presets?.[p]?.name || p}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -435,6 +437,133 @@ export function SettingsAPI() {
         onRunDeepDiagnostics={isOllamaMode ? handleDeepDiagnose : undefined}
         disabled={requiresApiKey && !apiKey.trim()}
       />
+
+      {/* Dual Model Section */}
+      <div className="space-y-4 pt-4 border-t border-border-muted">
+        <div className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            id="dual-model-enabled"
+            checked={dual.state.dualModelEnabled}
+            onChange={(e) => dual.setState((s) => ({ ...s, dualModelEnabled: e.target.checked }))}
+            className="mt-0.5 w-4 h-4 rounded border-border text-accent focus:ring-accent"
+          />
+          <label htmlFor="dual-model-enabled" className="space-y-0.5 flex-1">
+            <div className="text-text-primary font-medium">Dual Model (Visual + Texto)</div>
+            <div className="text-text-secondary text-xs">
+              Gemini analisa screenshots. MiniMax/modelo principal processa texto e lógica.
+            </div>
+          </label>
+        </div>
+
+        {dual.state.dualModelEnabled && (
+          <div className="space-y-3 pl-7">
+            {/* Visual provider selector */}
+            <div className="space-y-1.5">
+              <label className="flex items-center gap-2 text-xs font-medium text-text-secondary uppercase tracking-wide">
+                <Server className="w-3.5 h-3.5" />
+                Provedor Visual
+              </label>
+              <div className="flex gap-2">
+                {[
+                  { id: 'gemini', label: 'Gemini' },
+                  { id: 'nvidia', label: 'NVIDIA NIM' },
+                ].map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() =>
+                      dual.setState((s) => ({
+                        ...s,
+                        visualModelProvider: p.id,
+                        visualModelBaseUrl:
+                          p.id === 'nvidia'
+                            ? 'https://integrate.api.nvidia.com/v1'
+                            : 'https://generativelanguage.googleapis.com',
+                        visualModel:
+                          p.id === 'nvidia'
+                            ? 'nvidia/llama-3.2-90b-vision-instruct'
+                            : 'gemini-2.5-flash',
+                      }))
+                    }
+                    className={`flex-1 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                      dual.state.visualModelProvider === p.id
+                        ? 'border-accent bg-accent/10 text-accent'
+                        : 'border-border-muted text-text-secondary hover:border-border'
+                    }`}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <label className="flex items-center gap-2 text-xs font-medium text-text-secondary uppercase tracking-wide">
+                <Key className="w-3.5 h-3.5" />
+                {dual.state.visualModelProvider === 'nvidia' ? 'NVIDIA API Key' : 'Gemini API Key'}
+              </label>
+              <input
+                type="password"
+                value={dual.state.visualModelApiKey}
+                onChange={(e) =>
+                  dual.setState((s) => ({ ...s, visualModelApiKey: e.target.value }))
+                }
+                placeholder={dual.state.visualModelProvider === 'nvidia' ? 'nvapi-...' : 'AIza...'}
+                className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-text-primary text-sm focus:outline-none focus:ring-1 focus:ring-accent"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="flex items-center gap-2 text-xs font-medium text-text-secondary uppercase tracking-wide">
+                <Cpu className="w-3.5 h-3.5" />
+                Modelo Visual
+              </label>
+              <input
+                type="text"
+                value={dual.state.visualModel}
+                onChange={(e) => dual.setState((s) => ({ ...s, visualModel: e.target.value }))}
+                placeholder={
+                  dual.state.visualModelProvider === 'nvidia'
+                    ? 'nvidia/llama-3.2-90b-vision-instruct'
+                    : 'gemini-2.5-flash'
+                }
+                className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-text-primary text-sm focus:outline-none focus:ring-1 focus:ring-accent"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="flex items-center gap-2 text-xs font-medium text-text-secondary uppercase tracking-wide">
+                <Server className="w-3.5 h-3.5" />
+                Base URL
+              </label>
+              <input
+                type="text"
+                value={dual.state.visualModelBaseUrl}
+                onChange={(e) =>
+                  dual.setState((s) => ({ ...s, visualModelBaseUrl: e.target.value }))
+                }
+                placeholder={
+                  dual.state.visualModelProvider === 'nvidia'
+                    ? 'https://integrate.api.nvidia.com/v1'
+                    : 'https://generativelanguage.googleapis.com'
+                }
+                className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-text-primary text-sm focus:outline-none focus:ring-1 focus:ring-accent"
+              />
+            </div>
+            <button
+              onClick={() => void dual.save()}
+              disabled={dual.isSaving}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-white text-sm font-medium hover:bg-accent-hover disabled:opacity-50 transition-colors"
+            >
+              {dual.isSaving ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : dual.saved ? (
+                <CheckCircle className="w-3.5 h-3.5" />
+              ) : (
+                <CheckCircle className="w-3.5 h-3.5" />
+              )}
+              {dual.saved ? 'Salvo!' : 'Salvar configuração visual'}
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* Save Button */}
       <div className="space-y-3 py-5 border-b border-border-muted">

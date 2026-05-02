@@ -1,9 +1,8 @@
 import i18n from '../i18n/config';
 
 function getAppLocale(language = i18n.resolvedLanguage || i18n.language): string {
-  if (language.startsWith('zh')) {
-    return 'zh-CN';
-  }
+  if (language.startsWith('zh')) return 'zh-CN';
+  if (language.startsWith('pt')) return 'pt-BR';
   return 'en-US';
 }
 

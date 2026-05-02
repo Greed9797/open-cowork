@@ -34,7 +34,14 @@ import { API_PROVIDER_PRESETS, PI_AI_CURATED_PRESETS } from '../../shared/api-mo
 /**
  * Application configuration schema
  */
-export type ProviderType = 'openrouter' | 'anthropic' | 'custom' | 'openai' | 'gemini' | 'ollama';
+export type ProviderType =
+  | 'openrouter'
+  | 'anthropic'
+  | 'custom'
+  | 'openai'
+  | 'gemini'
+  | 'ollama'
+  | 'nvidia';
 export type CustomProtocolType = 'anthropic' | 'openai' | 'gemini';
 export type AppTheme = 'dark' | 'light' | 'system';
 export type ProviderProfileKey =
@@ -43,6 +50,7 @@ export type ProviderProfileKey =
   | 'openai'
   | 'gemini'
   | 'ollama'
+  | 'nvidia'
   | 'custom:anthropic'
   | 'custom:openai'
   | 'custom:gemini';
@@ -120,6 +128,13 @@ export interface AppConfig {
 
   // First run flag
   isConfigured: boolean;
+
+  // Dual-model mode: Gemini for vision, primary for text
+  dualModelEnabled?: boolean;
+  visualModelProvider?: string;
+  visualModelApiKey?: string;
+  visualModelBaseUrl?: string;
+  visualModel?: string;
 }
 
 const DEFAULT_CONFIG_SET_ID = 'default';
@@ -140,6 +155,11 @@ const DIRECT_READ_KEYS = new Set<keyof AppConfig>([
   'sandboxEnabled',
   'enableThinking',
   'isConfigured',
+  'dualModelEnabled',
+  'visualModelProvider',
+  'visualModelApiKey',
+  'visualModelBaseUrl',
+  'visualModel',
 ]);
 
 const defaultProfiles: Record<ProviderProfileKey, ProviderProfile> = {
@@ -167,6 +187,11 @@ const defaultProfiles: Record<ProviderProfileKey, ProviderProfile> = {
     apiKey: '',
     baseUrl: 'https://generativelanguage.googleapis.com',
     model: 'gemini-2.5-flash',
+  },
+  nvidia: {
+    apiKey: '',
+    baseUrl: 'https://integrate.api.nvidia.com/v1',
+    model: 'nvidia/llama-3.3-nemotron-super-49b-v1',
   },
   'custom:anthropic': {
     apiKey: '',
@@ -215,6 +240,10 @@ const defaultConfig: AppConfig = {
   sandboxEnabled: false,
   enableThinking: false,
   isConfigured: false,
+  dualModelEnabled: false,
+  visualModelApiKey: '',
+  visualModelBaseUrl: 'https://generativelanguage.googleapis.com',
+  visualModel: 'gemini-2.5-flash',
 };
 
 export const PROVIDER_PRESETS = API_PROVIDER_PRESETS;
@@ -275,6 +304,7 @@ const PROFILE_KEYS: ProviderProfileKey[] = [
   'openai',
   'gemini',
   'ollama',
+  'nvidia',
   'custom:anthropic',
   'custom:openai',
   'custom:gemini',
@@ -288,7 +318,8 @@ function isProviderType(value: unknown): value is ProviderType {
     value === 'custom' ||
     value === 'openai' ||
     value === 'gemini' ||
-    value === 'ollama'
+    value === 'ollama' ||
+    value === 'nvidia'
   );
 }
 
@@ -341,6 +372,9 @@ function profileKeyToProvider(profileKey: ProviderProfileKey): {
   }
   if (profileKey === 'ollama') {
     return { provider: 'ollama', customProtocol: 'openai' };
+  }
+  if (profileKey === 'nvidia') {
+    return { provider: 'nvidia', customProtocol: 'openai' };
   }
   return { provider: profileKey, customProtocol: 'anthropic' };
 }
@@ -849,6 +883,17 @@ export class ConfigStore {
       sandboxEnabled: toBoolean(raw.sandboxEnabled, defaultConfig.sandboxEnabled),
       enableThinking: projected.enableThinking,
       isConfigured: toBoolean(raw.isConfigured, defaultConfig.isConfigured),
+      dualModelEnabled: toBoolean(raw.dualModelEnabled, defaultConfig.dualModelEnabled ?? false),
+      visualModelApiKey:
+        typeof raw.visualModelApiKey === 'string'
+          ? raw.visualModelApiKey
+          : defaultConfig.visualModelApiKey,
+      visualModelBaseUrl:
+        typeof raw.visualModelBaseUrl === 'string'
+          ? raw.visualModelBaseUrl
+          : defaultConfig.visualModelBaseUrl,
+      visualModel:
+        typeof raw.visualModel === 'string' ? raw.visualModel : defaultConfig.visualModel,
     };
     this.normalizeModelIds(result);
     return result;
@@ -1261,6 +1306,19 @@ export class ConfigStore {
         updates.sandboxEnabled !== undefined ? updates.sandboxEnabled : current.sandboxEnabled,
       isConfigured:
         updates.isConfigured !== undefined ? updates.isConfigured : current.isConfigured,
+      dualModelEnabled:
+        updates.dualModelEnabled !== undefined
+          ? updates.dualModelEnabled
+          : current.dualModelEnabled,
+      visualModelApiKey:
+        updates.visualModelApiKey !== undefined
+          ? updates.visualModelApiKey
+          : current.visualModelApiKey,
+      visualModelBaseUrl:
+        updates.visualModelBaseUrl !== undefined
+          ? updates.visualModelBaseUrl
+          : current.visualModelBaseUrl,
+      visualModel: updates.visualModel !== undefined ? updates.visualModel : current.visualModel,
     });
   }
 

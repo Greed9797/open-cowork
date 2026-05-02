@@ -1,12 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Shield,
-  AlertCircle,
-  CheckCircle,
-  Settings,
-  Loader2,
-} from 'lucide-react';
+import { Shield, AlertCircle, CheckCircle, Settings, Loader2 } from 'lucide-react';
 import { renderLocalizedBannerMessage } from './shared';
 import type { LocalizedBanner } from './shared';
 
@@ -109,8 +103,16 @@ export function SettingsSandbox() {
     }
   }
 
-  // TODO: Re-enable when sandbox debugging is complete
-  // async function handleToggleSandbox() { ... }
+  async function handleToggleSandbox() {
+    const newValue = !sandboxEnabled;
+    setSandboxEnabled(newValue);
+    try {
+      await window.electronAPI.config.save({ sandboxEnabled: newValue });
+    } catch (err) {
+      setSandboxEnabled(!newValue);
+      setError({ text: t('sandbox.failedToSave') });
+    }
+  }
 
   async function handleCheckStatus() {
     if (isChecking) return; // Prevent double-click
@@ -310,34 +312,39 @@ export function SettingsSandbox() {
         </div>
       )}
 
-      {/* Enable/Disable Toggle - Temporarily Disabled */}
-      <div className="p-6 rounded-lg bg-surface border border-border text-center space-y-4">
-        <div className="w-16 h-16 rounded-lg flex items-center justify-center mx-auto bg-surface-muted text-text-muted">
-          <Shield className="w-8 h-8" />
+      {/* Enable/Disable Toggle */}
+      <div className="p-4 rounded-lg bg-surface border border-border flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <div
+            className={`w-10 h-10 flex-shrink-0 rounded-lg flex items-center justify-center ${sandboxEnabled ? 'bg-accent/10 text-accent' : 'bg-surface-muted text-text-muted'}`}
+          >
+            <Shield className="w-5 h-5" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-text-primary">{t('sandbox.enableSandbox')}</p>
+            <p className="text-xs text-text-muted mt-0.5 truncate">
+              {isWindows
+                ? t('sandbox.wslDesc')
+                : isMac
+                  ? t('sandbox.limaDesc')
+                  : t('sandbox.nativeDesc')}
+            </p>
+          </div>
         </div>
-        <div>
-          <h3 className="text-base font-semibold text-text-primary">
-            {t('sandbox.enableSandbox')}
-          </h3>
-          <p className="text-sm text-text-muted mt-1">
-            {isWindows
-              ? t('sandbox.wslDesc')
-              : isMac
-                ? t('sandbox.limaDesc')
-                : t('sandbox.nativeDesc')}
-          </p>
-        </div>
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-warning/10 text-warning text-xs font-medium">
-          <span>🚧</span>
-          <span>{t('sandbox.comingSoon')}</span>
-        </div>
-        <p className="text-xs text-text-muted max-w-sm mx-auto">
-          {t('sandbox.helpText1')} {t('sandbox.helpText2')}
-        </p>
+        <button
+          onClick={handleToggleSandbox}
+          disabled={isInstalling !== null}
+          aria-label={t('sandbox.enableSandbox')}
+          className={`relative flex-shrink-0 w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent/50 disabled:opacity-50 ${sandboxEnabled ? 'bg-accent' : 'bg-surface-muted'}`}
+        >
+          <span
+            className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200 ${sandboxEnabled ? 'translate-x-5' : 'translate-x-0'}`}
+          />
+        </button>
       </div>
 
-      {/* Status Details - Hidden while sandbox is disabled for debugging */}
-      {false && sandboxEnabled && (
+      {/* Status Details */}
+      {sandboxEnabled && (
         <div className="p-4 rounded-lg bg-surface border border-border space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-medium text-text-primary">

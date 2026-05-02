@@ -66,6 +66,7 @@ import {
   normalizeToolExecutionResultForUi,
 } from './tool-result-utils';
 import { fetchOllamaModelInfo } from '../config/ollama-api';
+import { analyzeImage, getVisualModelConfig } from './visual-model';
 
 // Virtual workspace path shown to the model (hides real sandbox path)
 const VIRTUAL_WORKSPACE_PATH = '/workspace';
@@ -289,8 +290,19 @@ function buildMcpCustomTools(mcpManager: MCPManager): ToolDefinition[] {
         try {
           const result = await mcpManager.callTool(mcpTool.name, params as Record<string, unknown>);
           const normalizedResult = normalizeMcpToolResultForModel(result);
+
+          // Dual-model: if this tool returned images and visual model is configured,
+          // call Gemini Vision and append its analysis to the text result.
+          let visualAnalysis = '';
+          if (normalizedResult.images.length > 0) {
+            const visualConfig = getVisualModelConfig();
+            if (visualConfig) {
+              visualAnalysis = await analyzeImage(visualConfig, normalizedResult.images);
+            }
+          }
+
           return {
-            content: [{ type: 'text' as const, text: normalizedResult.text }],
+            content: [{ type: 'text' as const, text: normalizedResult.text + visualAnalysis }],
             details:
               normalizedResult.images.length > 0
                 ? { openCoworkImages: normalizedResult.images }

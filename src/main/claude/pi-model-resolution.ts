@@ -49,6 +49,7 @@ export function resolvePiRouteProtocol(provider?: string, customProtocol?: strin
   if (provider === 'ollama') return 'openai';
   if (provider === 'openai') return 'openai';
   if (provider === 'openrouter') return 'openai';
+  if (provider === 'nvidia') return 'openai';
   if (provider === 'gemini') return 'gemini';
   return provider || 'anthropic';
 }

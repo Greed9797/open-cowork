@@ -4,7 +4,8 @@ export type SharedProviderType =
   | 'custom'
   | 'openai'
   | 'gemini'
-  | 'ollama';
+  | 'ollama'
+  | 'nvidia';
 
 export type SharedCustomProtocolType = 'anthropic' | 'openai' | 'gemini';
 
@@ -23,6 +24,7 @@ export interface SharedProviderPresets {
   openai: SharedProviderPreset;
   gemini: SharedProviderPreset;
   ollama: SharedProviderPreset;
+  nvidia: SharedProviderPreset;
 }
 
 export interface ModelInputGuidance {
@@ -99,6 +101,22 @@ export const API_PROVIDER_PRESETS: SharedProviderPresets = {
     ],
     keyPlaceholder: '可留空',
     keyHint: '多数 Ollama 部署可留空；如果你的代理层要求鉴权，也可以填写 Key',
+  },
+  nvidia: {
+    name: 'NVIDIA NIM',
+    baseUrl: 'https://integrate.api.nvidia.com/v1',
+    models: [
+      { id: 'nvidia/llama-3.3-nemotron-super-49b-v1', name: 'Nemotron Super 49B' },
+      { id: 'nvidia/llama-3.3-nemotron-ultra-253b-v1', name: 'Nemotron Ultra 253B' },
+      { id: 'nvidia/llama-3.2-90b-vision-instruct', name: 'Llama 3.2 90B Vision' },
+      { id: 'meta/llama-3.3-70b-instruct', name: 'Llama 3.3 70B' },
+      { id: 'mistralai/mistral-large-2-instruct', name: 'Mistral Large 2' },
+      { id: 'deepseek-ai/deepseek-r1', name: 'DeepSeek R1' },
+      { id: 'deepseek-ai/deepseek-v3', name: 'DeepSeek V3' },
+      { id: 'qwen/qwen3-235b-a22b', name: 'Qwen3 235B' },
+    ],
+    keyPlaceholder: 'nvapi-...',
+    keyHint: 'Obtenha em build.nvidia.com/nim — use o campo abaixo para modelos personalizados',
   },
   custom: {
     name: '更多模型',
