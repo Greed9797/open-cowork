@@ -20,15 +20,21 @@ interface VisualModelConfig {
   provider?: string;
 }
 
-const VISION_PROMPT =
-  'Você é um analista visual de e-commerce. Descreva com precisão o que vê neste screenshot: ' +
-  'layout, elementos de UI, textos visíveis, cores, estrutura da página, problemas de UX, ' +
-  'indicadores de conversão, e qualquer detalhe relevante para diagnóstico de e-commerce. ' +
-  'Seja técnico e direto. Máximo 300 palavras.';
+const BASE_VISION_PROMPT =
+  'Analyze this screenshot precisely. Describe: visible UI layout and structure, ' +
+  'all readable text content, interactive elements (buttons, inputs, menus, links), ' +
+  'colors and visual hierarchy, any errors, warnings or status indicators, ' +
+  'and any technically relevant details. Be concise and technical. Maximum 300 words.';
+
+function buildVisionPrompt(skillContext?: string): string {
+  if (!skillContext?.trim()) return BASE_VISION_PROMPT;
+  return `${BASE_VISION_PROMPT}\n\nAdditional context: ${skillContext.trim()}`;
+}
 
 async function analyzeImageWithOpenAI(
   config: VisualModelConfig,
-  images: ImageInput[]
+  images: ImageInput[],
+  skillContext?: string
 ): Promise<string> {
   const baseUrl = (config.baseUrl?.trim() || 'https://integrate.api.nvidia.com/v1').replace(
     /\/$/,
@@ -46,7 +52,7 @@ async function analyzeImageWithOpenAI(
     messages: [
       {
         role: 'user',
-        content: [{ type: 'text', text: VISION_PROMPT }, ...imageContent],
+        content: [{ type: 'text', text: buildVisionPrompt(skillContext) }, ...imageContent],
       },
     ],
     max_tokens: 500,
@@ -71,19 +77,20 @@ async function analyzeImageWithOpenAI(
   if (!text) return '';
 
   log('[VisualModel] NVIDIA analysis complete:', text.substring(0, 100));
-  return `\n\n[ANÁLISE VISUAL — NVIDIA ${config.model}]\n${text}`;
+  return `\n\n[VISUAL ANALYSIS — NVIDIA ${config.model}]\n${text}`;
 }
 
 export async function analyzeImage(
   config: VisualModelConfig,
-  images: ImageInput[]
+  images: ImageInput[],
+  skillContext?: string
 ): Promise<string> {
   if (!config.apiKey?.trim() || images.length === 0) return '';
   try {
     if (config.provider === 'nvidia') {
-      return await analyzeImageWithOpenAI(config, images);
+      return await analyzeImageWithOpenAI(config, images, skillContext);
     }
-    return await analyzeImageWithGemini(config, images);
+    return await analyzeImageWithGemini(config, images, skillContext);
   } catch (err) {
     logWarn('[VisualModel] analyzeImage failed:', err instanceof Error ? err.message : err);
     return '';
@@ -92,7 +99,8 @@ export async function analyzeImage(
 
 export async function analyzeImageWithGemini(
   config: VisualModelConfig,
-  images: ImageInput[]
+  images: ImageInput[],
+  skillContext?: string
 ): Promise<string> {
   if (!config.apiKey?.trim() || images.length === 0) return '';
 
@@ -105,7 +113,7 @@ export async function analyzeImageWithGemini(
     const client = new GoogleGenAI({ apiKey: config.apiKey.trim(), httpOptions });
 
     const contents = [
-      { text: VISION_PROMPT },
+      { text: buildVisionPrompt(skillContext) },
       ...images.map((img) => ({
         inlineData: { data: img.data, mimeType: img.mimeType },
       })),
@@ -124,7 +132,7 @@ export async function analyzeImageWithGemini(
     if (!text) return '';
 
     log('[VisualModel] Gemini analysis complete:', text.substring(0, 100));
-    return `\n\n[ANÁLISE VISUAL — Gemini ${config.model}]\n${text}`;
+    return `\n\n[VISUAL ANALYSIS — Gemini ${config.model}]\n${text}`;
   } catch (err) {
     logWarn('[VisualModel] Gemini vision call failed:', err instanceof Error ? err.message : err);
     return '';
