@@ -33,6 +33,9 @@ export interface GatewayConfig {
 
   /** Config set ID to use for remote sessions (overrides global API config; leave unset to use global) */
   remoteConfigSetId?: string;
+
+  /** Groq API key for audio transcription (voice messages from Telegram) */
+  groqApiKey?: string;
 }
 
 export interface GatewayAuthConfig {

@@ -8,6 +8,7 @@ import type {
 } from '../../types';
 
 const TELEGRAM_API = 'https://api.telegram.org';
+const GROQ_API = 'https://api.groq.com/openai/v1/audio/transcriptions';
 const POLL_TIMEOUT = 30; // seconds — long-poll window
 const MAX_MSG_LENGTH = 4096; // Telegram hard limit
 
@@ -16,11 +17,21 @@ interface TelegramUpdate {
   message?: TelegramMsg;
 }
 
+interface TelegramVoice {
+  file_id: string;
+  file_unique_id: string;
+  duration: number;
+  mime_type?: string;
+  file_size?: number;
+}
+
 interface TelegramMsg {
   message_id: number;
   from?: { id: number; is_bot: boolean; first_name?: string; username?: string };
   chat: { id: number; type: string };
   text?: string;
+  voice?: TelegramVoice;
+  audio?: TelegramVoice;
   entities?: { type: string; offset: number; length: number }[];
   date: number;
 }
@@ -29,14 +40,16 @@ export class TelegramChannel extends ChannelBase {
   readonly type = 'telegram' as const;
 
   private config: TelegramChannelConfig;
+  private groqApiKey?: string;
   private offset = 0;
   private botId: number | null = null;
   private polling = false;
   private pollAbort: AbortController | null = null;
 
-  constructor(config: TelegramChannelConfig) {
+  constructor(config: TelegramChannelConfig, groqApiKey?: string) {
     super();
     this.config = config;
+    this.groqApiKey = groqApiKey;
   }
 
   async start(): Promise<void> {
@@ -103,7 +116,7 @@ export class TelegramChannel extends ChannelBase {
         for (const update of updates) {
           this.offset = update.update_id + 1;
           if (update.message) {
-            this.handleMessage(update.message);
+            await this.handleMessage(update.message);
           }
         }
       } catch (err: unknown) {
@@ -120,20 +133,18 @@ export class TelegramChannel extends ChannelBase {
     }
   }
 
-  private handleMessage(msg: TelegramMsg): void {
-    if (!msg.text) return;
+  private async handleMessage(msg: TelegramMsg): Promise<void> {
     if (msg.from?.is_bot) return;
 
     const chatId = String(msg.chat.id);
     const userId = String(msg.from?.id ?? 'unknown');
     const isGroup = msg.chat.type === 'group' || msg.chat.type === 'supergroup';
-    const botMention = this.botId ? `@` : '';
-    void botMention; // used below
 
     // Check if bot is mentioned (group messages require @BotUsername mention)
     const isMentioned = (msg.entities ?? []).some(
       (e) =>
-        e.type === 'mention' && msg.text!.substring(e.offset, e.offset + e.length).startsWith('@')
+        e.type === 'mention' &&
+        (msg.text ?? '').substring(e.offset, e.offset + e.length).startsWith('@')
     );
 
     // In groups, skip if bot is not mentioned and requireMention is set
@@ -144,15 +155,44 @@ export class TelegramChannel extends ChannelBase {
       if (groupCfg?.allowFrom && !groupCfg.allowFrom.includes(userId)) return;
     }
 
-    // Strip @BotUsername from text
-    const cleanText = (msg.text ?? '').replace(/@\w+\s*/g, '').trim();
+    let messageText: string | undefined;
+
+    // Handle voice/audio messages via Groq transcription
+    const audioFile = msg.voice ?? msg.audio;
+    if (audioFile) {
+      if (!this.groqApiKey) {
+        const chatIdStr = chatId;
+        await this.api('sendMessage', {
+          chat_id: chatIdStr,
+          text: '⚠️ Audio transcription is not configured. Please add a Groq API key in Remote Control → Advanced settings.',
+        });
+        return;
+      }
+      try {
+        log('[Telegram] Transcribing audio file_id:', audioFile.file_id);
+        messageText = await this.transcribeAudio(audioFile.file_id);
+        log('[Telegram] Transcription result:', messageText?.slice(0, 100));
+      } catch (err) {
+        logError('[Telegram] Audio transcription failed:', err);
+        await this.api('sendMessage', {
+          chat_id: chatId,
+          text: '⚠️ Audio transcription failed. Please try again or send text.',
+        });
+        return;
+      }
+    } else if (msg.text) {
+      // Strip @BotUsername from text
+      messageText = msg.text.replace(/@\w+\s*/g, '').trim();
+    }
+
+    if (!messageText) return;
 
     const remote: RemoteMessage = {
       id: String(msg.message_id),
       channelType: 'telegram',
       channelId: chatId,
       sender: { id: userId, isBot: false },
-      content: { type: 'text', text: cleanText },
+      content: { type: 'text', text: messageText },
       timestamp: msg.date * 1000,
       isGroup,
       isMentioned,
@@ -160,6 +200,45 @@ export class TelegramChannel extends ChannelBase {
     };
 
     this.emitMessage(remote);
+  }
+
+  // ─── Audio Transcription ─────────────────────────────────────────────────────
+
+  private async transcribeAudio(fileId: string): Promise<string> {
+    // Step 1: Get file path from Telegram
+    const fileInfo = await this.api<{ file_path: string }>('getFile', { file_id: fileId });
+    const fileUrl = `${TELEGRAM_API}/file/bot${this.config.botToken.trim()}/${fileInfo.file_path}`;
+
+    // Step 2: Download audio bytes
+    const audioRes = await fetch(fileUrl);
+    if (!audioRes.ok) {
+      throw new Error(`Failed to download audio: HTTP ${audioRes.status}`);
+    }
+    const audioBuffer = await audioRes.arrayBuffer();
+
+    // Step 3: Determine filename/extension from file path
+    const ext = fileInfo.file_path.split('.').pop() || 'ogg';
+    const filename = `voice.${ext}`;
+
+    // Step 4: Send to Groq Whisper
+    const form = new FormData();
+    form.append('file', new Blob([audioBuffer], { type: `audio/${ext}` }), filename);
+    form.append('model', 'whisper-large-v3-turbo');
+    form.append('response_format', 'text');
+
+    const groqRes = await fetch(GROQ_API, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${this.groqApiKey}` },
+      body: form,
+    });
+
+    if (!groqRes.ok) {
+      const errText = await groqRes.text().catch(() => '');
+      throw new Error(`Groq transcription HTTP ${groqRes.status}: ${errText.slice(0, 200)}`);
+    }
+
+    const transcription = await groqRes.text();
+    return transcription.trim();
   }
 
   // ─── Send ────────────────────────────────────────────────────────────────────

@@ -11,10 +11,12 @@ interface Props {
   autoApproveSafeTools: boolean;
   remoteConfigSetId: string;
   configSets: ApiConfigSet[];
+  groqApiKey: string;
   onWorkingDirectoryChange: (value: string) => void;
   onGatewayPortChange: (value: number) => void;
   onAutoApproveChange: (value: boolean) => void;
   onRemoteConfigSetIdChange: (value: string) => void;
+  onGroqApiKeyChange: (value: string) => void;
 }
 
 export function AdvancedConfigStep({
@@ -23,10 +25,12 @@ export function AdvancedConfigStep({
   autoApproveSafeTools,
   remoteConfigSetId,
   configSets,
+  groqApiKey,
   onWorkingDirectoryChange,
   onGatewayPortChange,
   onAutoApproveChange,
   onRemoteConfigSetIdChange,
+  onGroqApiKeyChange,
 }: Props) {
   const { t } = useTranslation();
 
@@ -59,6 +63,26 @@ export function AdvancedConfigStep({
             {t(
               'remote.remoteApiConfigHint',
               'API config (provider, key, model) used for all remote sessions. "Use global" follows your main API config.'
+            )}
+          </p>
+        </div>
+
+        {/* Groq API Key for audio transcription */}
+        <div>
+          <label className="block text-sm font-medium text-text-secondary mb-2">
+            {t('remote.groqApiKey', 'Groq API Key (voice transcription)')}
+          </label>
+          <input
+            type="password"
+            value={groqApiKey}
+            onChange={(e) => onGroqApiKeyChange(e.target.value)}
+            className="w-full px-4 py-3 bg-surface-hover border border-border rounded-xl text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
+            placeholder="gsk_..."
+          />
+          <p className="text-xs text-text-muted mt-1.5">
+            {t(
+              'remote.groqApiKeyHint',
+              'Used to transcribe voice messages sent via Telegram. Get a free key at console.groq.com.'
             )}
           </p>
         </div>

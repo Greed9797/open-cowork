@@ -54,6 +54,7 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
   const [autoApproveSafeTools, setAutoApproveSafeTools] = useState(true);
   const [remoteConfigSetId, setRemoteConfigSetId] = useState('');
   const [configSets, setConfigSets] = useState<ApiConfigSet[]>([]);
+  const [groqApiKey, setGroqApiKey] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [useLongConnection, setUseLongConnection] = useState(true);
   const [tunnelEnabled, setTunnelEnabled] = useState(false);
@@ -105,6 +106,7 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
         setDefaultWorkingDirectory(configResult.gateway?.defaultWorkingDirectory || '');
         setAutoApproveSafeTools(configResult.gateway?.autoApproveSafeTools !== false);
         setRemoteConfigSetId(configResult.gateway?.remoteConfigSetId || '');
+        setGroqApiKey(configResult.gateway?.groqApiKey || '');
         setTunnelEnabled(configResult.gateway?.tunnel?.enabled || false);
         setNgrokAuthToken(configResult.gateway?.tunnel?.ngrok?.authToken || '');
         if (configResult.channels?.feishu) {
@@ -177,6 +179,7 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
         defaultWorkingDirectory: defaultWorkingDirectory || undefined,
         autoApproveSafeTools,
         remoteConfigSetId: remoteConfigSetId || undefined,
+        groqApiKey: groqApiKey || undefined,
         tunnel:
           tunnelEnabled && ngrokAuthToken
             ? {
@@ -373,6 +376,8 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
             onGatewayPortChange={setGatewayPort}
             onAutoApproveChange={setAutoApproveSafeTools}
             onRemoteConfigSetIdChange={setRemoteConfigSetId}
+            groqApiKey={groqApiKey}
+            onGroqApiKeyChange={setGroqApiKey}
           />
         )}
 

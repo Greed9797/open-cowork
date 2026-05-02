@@ -1167,9 +1167,13 @@ export class RemoteManager extends EventEmitter {
     // Register Telegram channel if configured
     const telegramConfig = config.channels.telegram;
     if (telegramConfig && telegramConfig.botToken) {
-      const telegramChannel = new TelegramChannel(telegramConfig);
+      const groqApiKey = config.gateway.groqApiKey || undefined;
+      const telegramChannel = new TelegramChannel(telegramConfig, groqApiKey);
       this.gateway.registerChannel(telegramChannel);
-      log('[RemoteManager] Telegram channel registered');
+      log(
+        '[RemoteManager] Telegram channel registered',
+        groqApiKey ? '(Groq transcription enabled)' : '(no Groq key)'
+      );
     }
   }
 

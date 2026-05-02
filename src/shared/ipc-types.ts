@@ -127,6 +127,7 @@ export interface GatewayConfig {
   defaultWorkingDirectory?: string;
   autoApproveSafeTools?: boolean;
   remoteConfigSetId?: string;
+  groqApiKey?: string;
 }
 
 /** Full remote configuration returned by remote.getConfig. */
