@@ -29,7 +29,7 @@ import type { Message, ContentBlock, ServerEvent, Session } from '../../renderer
 
 // Agent executor interface - exported for use in main process
 export interface AgentExecutor {
-  startSession(title: string, prompt: string, cwd?: string): Promise<Session>;
+  startSession(title: string, prompt: string, cwd?: string, pinnedModel?: string): Promise<Session>;
   continueSession(
     sessionId: string,
     prompt: string,
@@ -1205,11 +1205,13 @@ export class RemoteManager extends EventEmitter {
     const isNewSession = !this.remoteSessionIds.has(sessionId);
 
     if (isNewSession) {
-      // Create new session with working directory
+      // Create new session with working directory and optional pinned model
+      const remoteModel = remoteConfigStore.getAll().gateway.remoteModel || undefined;
       const newSession = await this.agentExecutor.startSession(
         buildRemoteSessionTitle(prompt),
         prompt,
-        workingDirectory
+        workingDirectory,
+        remoteModel
       );
 
       // Map remote session ID to actual session ID

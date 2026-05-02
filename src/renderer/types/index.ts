@@ -10,6 +10,7 @@ export interface Session {
   allowedTools: string[];
   memoryEnabled: boolean;
   model?: string;
+  modelPinned?: boolean;
   createdAt: number;
   updatedAt: number;
 }

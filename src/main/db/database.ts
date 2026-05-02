@@ -64,6 +64,7 @@ export interface SessionRow {
   allowed_tools: string; // JSON string
   memory_enabled: number;
   model: string | null;
+  model_pinned: number;
   created_at: number;
   updated_at: number;
 }
@@ -240,6 +241,7 @@ function initializeSchema(database: Database.Database): void {
 
     ensureColumn(database, 'sessions', 'openai_thread_id', 'openai_thread_id TEXT');
     ensureColumn(database, 'sessions', 'model', 'model TEXT');
+    ensureColumn(database, 'sessions', 'model_pinned', 'model_pinned INTEGER NOT NULL DEFAULT 0');
 
     // Create messages table
     database.exec(`

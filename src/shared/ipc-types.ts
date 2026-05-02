@@ -126,6 +126,7 @@ export interface GatewayConfig {
   tunnel?: TunnelConfig;
   defaultWorkingDirectory?: string;
   autoApproveSafeTools?: boolean;
+  remoteModel?: string;
 }
 
 /** Full remote configuration returned by remote.getConfig. */

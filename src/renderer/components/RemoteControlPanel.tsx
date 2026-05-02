@@ -51,6 +51,7 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
   const [gatewayPort, setGatewayPort] = useState(18789);
   const [defaultWorkingDirectory, setDefaultWorkingDirectory] = useState('');
   const [autoApproveSafeTools, setAutoApproveSafeTools] = useState(true);
+  const [remoteModel, setRemoteModel] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [useLongConnection, setUseLongConnection] = useState(true);
   const [tunnelEnabled, setTunnelEnabled] = useState(false);
@@ -96,6 +97,7 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
         setGatewayPort(configResult.gateway?.port || 18789);
         setDefaultWorkingDirectory(configResult.gateway?.defaultWorkingDirectory || '');
         setAutoApproveSafeTools(configResult.gateway?.autoApproveSafeTools !== false);
+        setRemoteModel(configResult.gateway?.remoteModel || '');
         setTunnelEnabled(configResult.gateway?.tunnel?.enabled || false);
         setNgrokAuthToken(configResult.gateway?.tunnel?.ngrok?.authToken || '');
         if (configResult.channels?.feishu) {
@@ -167,6 +169,7 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
         port: gatewayPort,
         defaultWorkingDirectory: defaultWorkingDirectory || undefined,
         autoApproveSafeTools,
+        remoteModel: remoteModel || undefined,
         tunnel:
           tunnelEnabled && ngrokAuthToken
             ? {
@@ -357,9 +360,11 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
             defaultWorkingDirectory={defaultWorkingDirectory}
             gatewayPort={gatewayPort}
             autoApproveSafeTools={autoApproveSafeTools}
+            remoteModel={remoteModel}
             onWorkingDirectoryChange={setDefaultWorkingDirectory}
             onGatewayPortChange={setGatewayPort}
             onAutoApproveChange={setAutoApproveSafeTools}
+            onRemoteModelChange={setRemoteModel}
           />
         )}
 
