@@ -31,8 +31,8 @@ export interface GatewayConfig {
   /** Auto-approve safe tools without user confirmation */
   autoApproveSafeTools?: boolean;
 
-  /** Model to use for remote sessions (overrides global config; leave unset to use global) */
-  remoteModel?: string;
+  /** Config set ID to use for remote sessions (overrides global API config; leave unset to use global) */
+  remoteConfigSetId?: string;
 }
 
 export interface GatewayAuthConfig {

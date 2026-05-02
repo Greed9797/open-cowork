@@ -245,11 +245,19 @@ export class SessionManager {
     allowedTools?: string[],
     content?: ContentBlock[],
     memoryEnabled?: boolean,
-    pinnedModel?: string
+    pinnedModel?: string,
+    configSetId?: string
   ): Promise<Session> {
     log('[SessionManager] Starting new session:', title);
 
-    const session = this.createSession(title, cwd, allowedTools, memoryEnabled, pinnedModel);
+    const session = this.createSession(
+      title,
+      cwd,
+      allowedTools,
+      memoryEnabled,
+      pinnedModel,
+      configSetId
+    );
 
     // Save to database
     this.saveSession(session);
@@ -273,7 +281,8 @@ export class SessionManager {
     cwd?: string,
     allowedTools?: string[],
     memoryEnabled?: boolean,
-    pinnedModel?: string
+    pinnedModel?: string,
+    configSetId?: string
   ): Session {
     const now = Date.now();
     // Prefer frontend-provided cwd; fallback to env vars if provided
@@ -283,6 +292,10 @@ export class SessionManager {
       typeof memoryEnabled === 'boolean'
         ? memoryEnabled
         : configStore.get('memoryEnabled') !== false;
+    // When a configSetId is provided, resolve the model from that set
+    const resolvedModel = configSetId
+      ? configStore.getAllForConfigSetId(configSetId).model || configStore.get('model') || undefined
+      : pinnedModel || configStore.get('model') || undefined;
     return {
       id: uuidv4(),
       title,
@@ -303,8 +316,9 @@ export class SessionManager {
         'grep',
       ],
       memoryEnabled: resolvedMemoryEnabled,
-      model: pinnedModel || configStore.get('model') || undefined,
-      modelPinned: !!pinnedModel,
+      model: resolvedModel,
+      modelPinned: !!(pinnedModel || configSetId),
+      configSetId: configSetId || undefined,
       createdAt: now,
       updatedAt: now,
     };
@@ -324,6 +338,7 @@ export class SessionManager {
       memory_enabled: session.memoryEnabled ? 1 : 0,
       model: session.model || null,
       model_pinned: session.modelPinned ? 1 : 0,
+      config_set_id: session.configSetId || null,
       created_at: session.createdAt,
       updated_at: session.updatedAt,
     });
@@ -362,6 +377,7 @@ export class SessionManager {
       memoryEnabled: row.memory_enabled === 1,
       model: row.model || undefined,
       modelPinned: row.model_pinned === 1,
+      configSetId: row.config_set_id || undefined,
       createdAt: row.created_at,
       updatedAt: row.updated_at,
     };

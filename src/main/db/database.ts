@@ -65,6 +65,7 @@ export interface SessionRow {
   memory_enabled: number;
   model: string | null;
   model_pinned: number;
+  config_set_id: string | null;
   created_at: number;
   updated_at: number;
 }
@@ -242,6 +243,7 @@ function initializeSchema(database: Database.Database): void {
     ensureColumn(database, 'sessions', 'openai_thread_id', 'openai_thread_id TEXT');
     ensureColumn(database, 'sessions', 'model', 'model TEXT');
     ensureColumn(database, 'sessions', 'model_pinned', 'model_pinned INTEGER NOT NULL DEFAULT 0');
+    ensureColumn(database, 'sessions', 'config_set_id', 'config_set_id TEXT');
 
     // Create messages table
     database.exec(`

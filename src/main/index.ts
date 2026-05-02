@@ -958,7 +958,7 @@ app
     // 初始化远程管理器
     remoteManager.setRendererCallback(sendToRenderer);
     const agentExecutor: AgentExecutor = {
-      startSession: async (title, prompt, cwd, pinnedModel) => {
+      startSession: async (title, prompt, cwd, pinnedModel, configSetId) => {
         if (!sessionManager) throw new Error('Session manager not initialized');
         const unsupportedReason = getWorkspacePathUnsupportedReason(cwd);
         if (unsupportedReason) {
@@ -971,7 +971,8 @@ app
           undefined,
           undefined,
           undefined,
-          pinnedModel
+          pinnedModel,
+          configSetId
         );
       },
       continueSession: async (sessionId, prompt, content, cwd) => {

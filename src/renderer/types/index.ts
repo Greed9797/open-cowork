@@ -11,6 +11,7 @@ export interface Session {
   memoryEnabled: boolean;
   model?: string;
   modelPinned?: boolean;
+  configSetId?: string;
   createdAt: number;
   updatedAt: number;
 }

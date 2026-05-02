@@ -1323,8 +1323,10 @@ ${hints.join('\n')}
 
       logTiming('before pi-ai model resolution', runStartTime);
 
-      // Resolve model via pi-ai
-      const runtimeConfig = configStore.getAll();
+      // Resolve model via pi-ai — use pinned config set when set for remote sessions
+      const runtimeConfig = session.configSetId
+        ? configStore.getAllForConfigSetId(session.configSetId)
+        : configStore.getAll();
       const modelString = this.getCurrentModelString(runtimeConfig.model);
       const configProtocol = resolvePiRouteProtocol(
         runtimeConfig.provider,

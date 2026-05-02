@@ -25,6 +25,7 @@ import type {
   ConfigStep,
   LocalizedBanner,
 } from './remote/types';
+import type { ApiConfigSet } from '../types';
 
 const isElectron = typeof window !== 'undefined' && window.electronAPI !== undefined;
 
@@ -51,7 +52,8 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
   const [gatewayPort, setGatewayPort] = useState(18789);
   const [defaultWorkingDirectory, setDefaultWorkingDirectory] = useState('');
   const [autoApproveSafeTools, setAutoApproveSafeTools] = useState(true);
-  const [remoteModel, setRemoteModel] = useState('');
+  const [remoteConfigSetId, setRemoteConfigSetId] = useState('');
+  const [configSets, setConfigSets] = useState<ApiConfigSet[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [useLongConnection, setUseLongConnection] = useState(true);
   const [tunnelEnabled, setTunnelEnabled] = useState(false);
@@ -77,6 +79,7 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
         pairingsResult,
         tunnelStatusResult,
         webhookUrlResult,
+        appConfigResult,
       ] = await Promise.all([
         window.electronAPI.remote.getConfig(),
         window.electronAPI.remote.getStatus(),
@@ -84,6 +87,7 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
         window.electronAPI.remote.getPendingPairings(),
         window.electronAPI.remote.getTunnelStatus(),
         window.electronAPI.remote.getWebhookUrl(),
+        window.electronAPI.config.get(),
       ]);
 
       setConfig(configResult);
@@ -92,12 +96,15 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
       setPendingPairings(pairingsResult);
       setTunnelStatus(tunnelStatusResult);
       setWebhookUrl(webhookUrlResult);
+      if (appConfigResult?.configSets) {
+        setConfigSets(appConfigResult.configSets);
+      }
 
       if (configResult) {
         setGatewayPort(configResult.gateway?.port || 18789);
         setDefaultWorkingDirectory(configResult.gateway?.defaultWorkingDirectory || '');
         setAutoApproveSafeTools(configResult.gateway?.autoApproveSafeTools !== false);
-        setRemoteModel(configResult.gateway?.remoteModel || '');
+        setRemoteConfigSetId(configResult.gateway?.remoteConfigSetId || '');
         setTunnelEnabled(configResult.gateway?.tunnel?.enabled || false);
         setNgrokAuthToken(configResult.gateway?.tunnel?.ngrok?.authToken || '');
         if (configResult.channels?.feishu) {
@@ -169,7 +176,7 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
         port: gatewayPort,
         defaultWorkingDirectory: defaultWorkingDirectory || undefined,
         autoApproveSafeTools,
-        remoteModel: remoteModel || undefined,
+        remoteConfigSetId: remoteConfigSetId || undefined,
         tunnel:
           tunnelEnabled && ngrokAuthToken
             ? {
@@ -360,11 +367,12 @@ export function RemoteControlPanel({ isActive }: { isActive: boolean }) {
             defaultWorkingDirectory={defaultWorkingDirectory}
             gatewayPort={gatewayPort}
             autoApproveSafeTools={autoApproveSafeTools}
-            remoteModel={remoteModel}
+            remoteConfigSetId={remoteConfigSetId}
+            configSets={configSets}
             onWorkingDirectoryChange={setDefaultWorkingDirectory}
             onGatewayPortChange={setGatewayPort}
             onAutoApproveChange={setAutoApproveSafeTools}
-            onRemoteModelChange={setRemoteModel}
+            onRemoteConfigSetIdChange={setRemoteConfigSetId}
           />
         )}
 

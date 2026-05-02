@@ -1183,6 +1183,17 @@ export class ConfigStore {
   }
 
   /**
+   * Return AppConfig projected from a specific config set ID.
+   * Falls back to the active config if the ID is not found.
+   */
+  getAllForConfigSetId(id: string): AppConfig {
+    const current = this.getAll();
+    const match = current.configSets?.find((s) => s.id === id);
+    if (!match) return current;
+    return this.composeProjectedConfig(current, current.configSets, id);
+  }
+
+  /**
    * Create a new named config set.
    * - mode=blank: create a fresh set from current provider/protocol defaults
    * - mode=clone: clone current/selected set
