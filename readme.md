@@ -2,198 +2,209 @@
   <img src="resources/logo.png" alt="Open Cowork Logo" width="280" />
 </p>
 
-<h1 align="center">🚀 Open Cowork: Your Personal AI Agent Desktop App</h1>
-
-<p align="center">
-  • Open Source Claude Cowork • One-Click Install 
-</p>
-
-<p align="center">
-  <a href="./README_zh.md">中文文档</a> •
-  <a href="#features">Features</a> •
-  <a href="#demo">Demo</a> •
-  <a href="#installation">Downloads</a> •
-  <a href="#quick-start">Quick Start</a> •
-  <a href="#skills">Skills Library</a>
-</p>
+<h1 align="center">Open Cowork — AI Agent Desktop App</h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20macOS-blue" alt="Platform" />
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License" />
-  <img src="https://img.shields.io/badge/Node.js-18+-brightgreen" alt="Node.js" />
-  <a href="https://discord.gg/pynjtQDf"><img src="https://img.shields.io/discord/1493588403260883078?logo=discord&label=Discord&color=5865F2" alt="Discord" /></a>
-  <a href="#community"><img src="https://img.shields.io/badge/WeChat-微信群-07C160?logo=wechat&logoColor=white" alt="WeChat" /></a>
+  <img src="https://img.shields.io/badge/Electron-41.x-47848F?logo=electron" alt="Electron" />
+  <img src="https://img.shields.io/badge/Node.js-22+-brightgreen" alt="Node.js" />
+</p>
+
+<p align="center">
+  <a href="#installation">⬇️ Download</a> •
+  <a href="#quick-start">🚀 Quick Start</a> •
+  <a href="#features">✨ Features</a> •
+  <a href="#skills">🧰 Skills</a> •
+  <a href="#faq">❓ FAQ</a>
 </p>
 
 ---
 
-Open Cowork is a free, open-source AI agent desktop application for Windows and macOS. It wraps Claude Code, OpenAI, Gemini, DeepSeek, and other AI models into a user-friendly GUI with one-click installation — no coding required. Key capabilities include VM-level sandbox isolation (WSL2 on Windows, Lima on macOS), a built-in Skills system for generating PPTX, DOCX, XLSX, and PDF documents, MCP (Model Context Protocol) integration for connecting to browsers, Notion, and other desktop apps, GUI automation via computer use, and remote control through Feishu (Lark) and Slack. Open Cowork is the open-source implementation of Claude Cowork, designed to make AI-powered desktop automation accessible to everyone.
+Open Cowork is a free, open-source AI agent desktop app for Windows and macOS. It wraps Claude, OpenAI, Gemini and other models into a user-friendly GUI — no coding required. Key capabilities: VM-level sandbox isolation (WSL2 on Windows, Lima on macOS), built-in Skills for generating PPTX, DOCX, XLSX and PDF, MCP integration for browsers and Notion, GUI automation via computer use, and remote control via Telegram.
 
 ---
 
-## 📖 Introduction
+## 📋 System Requirements
 
-**Open Cowork** is an open-source implementation of **Claude Cowork**, with one-click installers for **Windows** and **macOS**—no coding required.
+|                  | Windows                        | macOS                          |
+| ---------------- | ------------------------------ | ------------------------------ |
+| **OS**           | Windows 10 / 11 (64-bit)       | macOS 12 Monterey or later     |
+| **Architecture** | x64                            | Apple Silicon (M1+)            |
+| **RAM**          | 4 GB minimum, 8 GB recommended | 4 GB minimum, 8 GB recommended |
+| **Disk**         | ~500 MB free                   | ~500 MB free                   |
+| **Node.js**      | Not required (bundled)         | Not required (bundled)         |
 
-It provides a sandboxed workspace where AI can manage files, generate professional outputs (PPTX, DOCX, XLSX, etc.) through our built-in **Skills** system, and **connect to desktop apps via MCP** (browser, Notion, etc.) for better collaboration.
-
-> [!WARNING]
-> **Disclaimer**: Open Cowork is an AI collaboration tool. Please exercise caution with its operations, especially when authorizing file modifications or deletions. We support VM-based sandbox isolation, but some operations may still carry risks.
-
----
-
-<a id="features"></a>
-
-## ✨ Key Features
-
-|               | MCP & Skills | Remote Control | GUI Operation |
-| ------------- | ------------ | -------------- | ------------- |
-| Claude Cowork | ✓            | ✗              | ✗             |
-| OpenClaw      | ✓            | ✓              | ✗             |
-| OpenCowork    | ✓            | ✓              | ✓             |
-
-- **One-Click Install, Ready to Use**: Pre-built installers for Windows and macOS, no environment setup needed—just download and start using.
-- **Flexible Model Support**: Supports **Claude**, **OpenAI-compatible APIs**, and Chinese models like **GLM**, **MiniMax**, **Kimi**. Use your OpenRouter, Anthropic, or other API keys with flexible configuration. More models coming soon!
-- **Remote Control**: Connect to collaboration platforms like **Feishu (Lark)** and other remote services to automate workflows and cross-platform operations.
-- **GUI Operation**: Control and interact with various desktop GUI applications on your computer. **Recommended model: Gemini-3-Pro** for optimal GUI understanding and control.
-- **Smart File Management**: Read, write, and organize files within your workspace.
-- **Skills System**: Built-in workflows for PPTX, DOCX, PDF, XLSX generation and processing. **Supports custom skill creation and deletion.**
-- **MCP External Service Support**: Integrate browser, Notion, custom apps and more through **MCP Connectors** to extend AI capabilities.
-- **Multimodal Input**: Drag & drop files and images directly into the chat input for seamless multimodal interaction.
-- **Real-time Trace**: Watch AI reasoning and tool execution in the Trace Panel.
-- **Secure Workspace**: All operations confined to your chosen workspace folder.
-- **VM-Level Isolation**: WSL2 (Windows) and Lima (macOS) VM isolation—all commands execute in an isolated VM to protect your host system.
-- **UI Enhancements**: Beautiful and flexible UI design, system language switching, comprehensive MCP/Skills/Tools call display.
-
-<a id="demo"></a>
-
-## 🎬 Demo
-
-See Open Cowork in action:
-
-### 1. Folder Organization & Cleanup 📂
-
-https://github.com/user-attachments/assets/dbeb0337-2d19-4b5d-a438-5220f2a87ca7
-
-### 2. Generate PPT from Files 📊
-
-https://github.com/user-attachments/assets/30299ded-0260-468f-b11d-d282bb9c97f2
-
-### 3. Generate XLSX Spreadsheets 📉
-
-https://github.com/user-attachments/assets/f57b9106-4b2c-4747-aecd-a07f78af5dfc
-
-### 4. GUI Operation🖥
-
-https://github.com/user-attachments/assets/75542c76-210f-414d-8182-1da988c148f2
-
-### 5. Remote control with Feishu(Lark) 🤖
-
-https://github.com/user-attachments/assets/05a703de-c0f5-407b-9a43-18b6a172fd74
+> **Sandbox (optional but recommended):** WSL2 on Windows, Lima on macOS — see [Security Configuration](#security-configuration).
 
 ---
 
 <a id="installation"></a>
 
-## 📦 Installation
+## ⬇️ Download & Install
 
-### Option 1: Homebrew (macOS, Recommended)
+### macOS
+
+**Step 1 — Download the DMG**
+
+Go to the [Releases page](https://github.com/Greed9797/open-cowork/releases) and download `Open Cowork-<version>-mac-arm64.dmg`.
+
+**Step 2 — Open the DMG**
+
+Double-click the `.dmg` file. Drag **Open Cowork** to your **Applications** folder.
+
+**Step 3 — Bypass Gatekeeper (first launch only)**
+
+Because the app is not distributed through the Mac App Store, macOS will block it on first open. Fix:
+
+1. Go to **System Settings → Privacy & Security**
+2. Scroll down to the blocked app warning
+3. Click **Open Anyway**
+
+Or run once in Terminal to permanently allow:
 
 ```bash
-brew tap OpenCoworkAI/tap
-brew install --cask --no-quarantine open-cowork
+xattr -d com.apple.quarantine /Applications/Open\ Cowork.app
 ```
 
-> The `--no-quarantine` flag bypasses macOS Gatekeeper, so you won't see the "Apple cannot verify this app" warning.
+---
 
-### Option 2: Download Installer
+### Windows
 
-Get the latest version from our [Releases Page](https://github.com/OpenCoworkAI/open-cowork/releases).
+**Step 1 — Download the installer**
 
-| Platform                  | File Type |
-| ------------------------- | --------- |
-| **Windows**               | `.exe`    |
-| **macOS** (Apple Silicon) | `.dmg`    |
+Go to the [Releases page](https://github.com/Greed9797/open-cowork/releases) and download `Open Cowork-<version>-win-x64.exe`.
 
-### Option 3: Build from Source
+**Step 2 — Run the installer**
 
-For developers who want to contribute or modify the codebase:
+Double-click the `.exe`. If Windows SmartScreen blocks it, click **More info → Run anyway**.
+
+**Step 3 — Launch**
+
+Open Cowork appears in Start Menu and Desktop. Launch it and proceed to [Quick Start](#quick-start).
+
+---
+
+### Build from Source
+
+For developers who want to contribute or run a custom build:
 
 ```bash
-git clone https://github.com/OpenCoworkAI/open-cowork.git
+# Requirements: Node.js 22+, npm 10+
+git clone https://github.com/Greed9797/open-cowork.git
 cd open-cowork
 npm install
-npm run rebuild
-npm run dev
+npm run rebuild     # rebuild native modules for Electron
+npm run dev         # dev mode with hot-reload
+npm run build       # build installer to /release
 ```
 
-To build the installer locally: `npm run build`
+---
 
-### Security Configuration: 🔒 Sandbox Support
+<a id="security-configuration"></a>
 
-Open Cowork provides **multi-level sandbox protection** to keep your system safe:
+### 🔒 Security Configuration (Sandbox)
 
-| Level        | Platform | Technology | Description                                    |
-| ------------ | -------- | ---------- | ---------------------------------------------- |
-| **Basic**    | All      | Path Guard | File operations restricted to workspace folder |
-| **Enhanced** | Windows  | WSL2       | Commands execute in isolated Linux VM          |
-| **Enhanced** | macOS    | Lima       | Commands execute in isolated Linux VM          |
+Open Cowork supports multi-level sandboxing to isolate AI operations from your host system:
 
-- **Windows (WSL2)**: When WSL2 is detected, all Bash commands are automatically routed to a Linux VM. The workspace is synced bidirectionally.
-- **macOS (Lima)**: When [Lima](https://lima-vm.io/) is installed (`brew install lima`), commands run in an Ubuntu VM with `/Users` mounted.
-- **Fallback**: If no VM is available, commands run natively with path-based restrictions.
+| Level        | Platform | Technology | What it does                                  |
+| ------------ | -------- | ---------- | --------------------------------------------- |
+| **Basic**    | All      | Path Guard | AI file access restricted to workspace folder |
+| **Enhanced** | Windows  | WSL2       | All commands run inside an isolated Linux VM  |
+| **Enhanced** | macOS    | Lima       | All commands run inside an isolated Linux VM  |
 
-**Setup (Optional, Recommended)**
-
-- **Windows**: WSL2 is auto-detected if installed. [Install WSL2](https://docs.microsoft.com/en-us/windows/wsl/install)
-
-- **macOS**:
-  Lima is auto-detected if installed. Install command:
+**macOS — enable Lima sandbox (recommended):**
 
 ```bash
 brew install lima
-# Open Cowork will automatically create and manage a 'claude-sandbox' VM
+# Open Cowork will auto-detect Lima and create a 'claude-sandbox' VM
 ```
+
+**Windows — enable WSL2 sandbox (recommended):**
+
+Install WSL2 from Microsoft: [https://docs.microsoft.com/en-us/windows/wsl/install](https://docs.microsoft.com/en-us/windows/wsl/install)
+
+Open Cowork auto-detects WSL2 — no extra configuration needed.
+
+> If no VM is available, the app falls back to path-based restrictions only.
 
 ---
 
 <a id="quick-start"></a>
 
-## 🚀 Quick Start Guide
+## 🚀 Quick Start
 
-### 1. Get an API Key
+### Step 1 — Get an API Key
 
-You need an API key to power the agent. We support **OpenRouter**, **Anthropic**, and various cost-effective **Chinese Models**.
+You need an API key from an AI provider. Recommended options:
 
-| Provider           | Get Key / Coding Plan                                                      | Base URL (Required)                      | Recommended Model    |
-| ------------------ | -------------------------------------------------------------------------- | ---------------------------------------- | -------------------- |
-| **OpenRouter**     | [OpenRouter](https://openrouter.ai/)                                       | `https://openrouter.ai/api`              | `claude-4-5-sonnet`  |
-| **Anthropic**      | [Anthropic Console](https://console.anthropic.com/)                        | (Default)                                | `claude-4-5-sonnet`  |
-| **Zhipu AI (GLM)** | [GLM Coding Plan](https://bigmodel.cn/glm-coding) (⚡️Chinese Deal)         | `https://open.bigmodel.cn/api/anthropic` | `glm-4.7`, `glm-4.6` |
-| **MiniMax**        | [MiniMax Coding Plan](https://platform.minimaxi.com/subscribe/coding-plan) | `https://api.minimaxi.com/anthropic`     | `minimax-m2`         |
-| **Kimi**           | [Kimi Coding Plan](https://www.kimi.com/membership/pricing)                | `https://api.kimi.com/coding/`           | `kimi-k2`            |
+| Provider       | Where to get it                                         | Base URL                    | Best model                    |
+| -------------- | ------------------------------------------------------- | --------------------------- | ----------------------------- |
+| **Anthropic**  | [console.anthropic.com](https://console.anthropic.com/) | _(leave blank — default)_   | `claude-sonnet-4-6`           |
+| **OpenRouter** | [openrouter.ai](https://openrouter.ai/)                 | `https://openrouter.ai/api` | `anthropic/claude-sonnet-4-6` |
 
-### 2. Configure
+> OpenRouter lets you use multiple providers with a single key and offers pay-as-you-go billing.
 
-1. Open the app and click the ⚙️ **Settings** icon in the bottom left.
-2. Paste your **API Key**.
-3. **Crucial**: Set the **Base URL** according to the table above (especially for Zhipu/MiniMax, etc.).
-4. Enter the **Model** name you want to use.
+### Step 2 — Configure the App
 
-### 3. Start Coworking
+1. Open the app → click the **⚙️ Settings** icon (bottom left)
+2. Paste your **API Key**
+3. Set the **Base URL** if using OpenRouter (see table above)
+4. Set the **Model** name
+5. Click **Save**
 
-1. **Select a Workspace**: Choose a folder where Claude is allowed to work.
-2. **Enter a Prompt**:
-   > "Read the financial_report.csv in this folder and create a PowerPoint summary with 5 slides."
+### Step 3 — Choose a Workspace
 
-### 📝 Important Notes
+Click **Select Workspace** and choose a folder. The AI can only read/write files inside this folder.
 
-1.  **macOS Installation**: If you downloaded the DMG directly (not via Homebrew) and see a security warning, go to **System Settings > Privacy & Security** and click **Open Anyway**. Or install via Homebrew to avoid this entirely:
-    ```bash
-    brew tap OpenCoworkAI/tap && brew install --cask --no-quarantine open-cowork
-    ```
-2.  **Network Access**: For tools like `WebSearch`, you may need to enable "Virtual Network Interface" (TUN Mode) in your proxy settings to ensure connectivity.
-3.  **Notion Connector**: Besides setting the integration token, you also need to add connections in a root page. See https://www.notion.com/help/add-and-manage-connections-with-the-api for more details.
+> Create a dedicated folder like `~/ai-workspace` — don't point it at your entire home directory.
+
+### Step 4 — Start Working
+
+Type a prompt and press Enter. Examples:
+
+> "Summarize all PDF files in this folder into a single Word document."
+
+> "Read sales_data.xlsx and create a PowerPoint with 5 slides showing key trends."
+
+> "Organize the files in this folder into subfolders by type and date."
+
+---
+
+<a id="features"></a>
+
+## ✨ Features
+
+- **One-click install** — pre-built installers for Windows and macOS, no terminal needed
+- **Multi-model support** — Claude, OpenAI-compatible APIs, Gemini, DeepSeek, Ollama (local)
+- **Skills system** — built-in workflows for PPTX, DOCX, XLSX, PDF generation
+- **MCP integration** — connect to browsers, Notion, and other desktop apps
+- **GUI automation** — control desktop apps via computer use (recommended: Gemini Pro)
+- **Remote control** — send commands via Telegram bot
+- **VM-level sandbox** — WSL2 (Windows) and Lima (macOS) isolate all AI operations
+- **Multimodal input** — drag & drop images and files directly into chat
+- **Memory system** — AI remembers context across sessions
+- **Scheduled tasks** — run recurring AI tasks on a schedule
+
+---
+
+## 🎬 Demos
+
+### Folder Organization 📂
+
+https://github.com/user-attachments/assets/dbeb0337-2d19-4b5d-a438-5220f2a87ca7
+
+### Generate PPT from Files 📊
+
+https://github.com/user-attachments/assets/30299ded-0260-468f-b11d-d282bb9c97f2
+
+### Generate XLSX Spreadsheets 📉
+
+https://github.com/user-attachments/assets/f57b9106-4b2c-4747-aecd-a07f78af5dfc
+
+### GUI Automation 🖥
+
+https://github.com/user-attachments/assets/75542c76-210f-414d-8182-1da988c148f2
 
 ---
 
@@ -201,13 +212,17 @@ You need an API key to power the agent. We support **OpenRouter**, **Anthropic**
 
 ## 🧰 Skills Library
 
-Open Cowork ships with built-in skills under `.claude/skills/`, and supports user-added or custom skills, including:
+Skills are pre-built AI workflows. They live under `.claude/skills/` and can be loaded on demand.
 
-- `pptx` for PowerPoint generation
-- `docx` for Word document processing
-- `pdf` for PDF handling and forms
-- `xlsx` for Excel spreadsheet support
-- `skill-creator` for creating custom skills
+| Skill           | What it does                                        |
+| --------------- | --------------------------------------------------- |
+| `pptx`          | Generate PowerPoint presentations from data or text |
+| `docx`          | Create and edit Word documents                      |
+| `pdf`           | Read, fill, and extract from PDF files              |
+| `xlsx`          | Create and process Excel spreadsheets               |
+| `skill-creator` | Build your own custom skills                        |
+
+You can add custom skills by creating a folder under `.claude/skills/<name>/` with a `SKILL.md` describing the workflow.
 
 ---
 
@@ -216,137 +231,70 @@ Open Cowork ships with built-in skills under `.claude/skills/`, and supports use
 ```
 open-cowork/
 ├── src/
-│   ├── main/                    # Electron Main Process (Node.js)
-│   │   ├── index.ts             # Main entry point
-│   │   ├── claude/              # Agent SDK & Runner
-│   │   │   └── agent-runner.ts  # AI agent execution logic
-│   │   ├── config/              # Configuration management
-│   │   │   └── config-store.ts  # Persistent settings storage
-│   │   ├── db/                  # Database layer
-│   │   │   └── database.ts      # SQLite/data persistence
-│   │   ├── ipc/                 # IPC handlers
-│   │   ├── memory/              # Memory management
-│   │   │   └── memory-manager.ts
-│   │   ├── sandbox/             # Security & Path Resolution
-│   │   │   └── path-resolver.ts # Sandboxed file access
+│   ├── main/                    # Electron main process (Node.js)
+│   │   ├── claude/              # Agent runner & AI SDK integration
+│   │   ├── config/              # Settings & model configuration
+│   │   ├── db/                  # SQLite persistence
+│   │   ├── memory/              # Cross-session memory
+│   │   ├── remote/              # Remote control (Telegram)
+│   │   ├── sandbox/             # Path guard & VM bridge
 │   │   ├── session/             # Session management
-│   │   │   └── session-manager.ts
-│   │   ├── skills/              # Skill Loader & Manager
-│   │   │   └── skills-manager.ts
-│   │   └── tools/               # Tool execution
-│   │       └── tool-executor.ts # Tool call handling
-│   ├── preload/                 # Electron preload scripts
-│   │   └── index.ts             # Context bridge setup
-│   └── renderer/                # Frontend UI (React + Tailwind)
-│       ├── App.tsx              # Root component
-│       ├── main.tsx             # React entry point
-│       ├── components/          # UI Components
-│       │   ├── ChatView.tsx     # Main chat interface
-│       │   ├── ConfigModal.tsx  # Settings dialog
-│       │   ├── ContextPanel.tsx # File context display
-│       │   ├── MessageCard.tsx  # Chat message component
-│       │   ├── PermissionDialog.tsx
-│       │   ├── Sidebar.tsx      # Navigation sidebar
-│       │   ├── Titlebar.tsx     # Custom window titlebar
-│       │   ├── TracePanel.tsx   # AI reasoning trace
-│       │   └── WelcomeView.tsx  # Onboarding screen
-│       ├── hooks/               # Custom React hooks
-│       │   └── useIPC.ts        # IPC communication hook
-│       ├── store/               # State management
-│       │   └── index.ts
-│       ├── styles/              # CSS styles
-│       │   └── globals.css
-│       ├── types/               # TypeScript types
-│       │   └── index.ts
-│       └── utils/               # Utility functions
-├── .claude/
-│   └── skills/                  # Default Skill Definitions
-│       ├── pptx/                # PowerPoint generation
-│       ├── docx/                # Word document processing
-│       ├── pdf/                 # PDF handling & forms
-│       ├── xlsx/                # Excel spreadsheet support
-│       └── skill-creator/       # Skill development toolkit
-├── resources/                   # Static Assets (icons, images)
-├── electron-builder.yml         # Build configuration
-├── vite.config.ts               # Vite bundler config
-└── package.json                 # Dependencies & scripts
+│   │   ├── skills/              # Skill loader
+│   │   └── tools/               # Tool execution (file, web, shell)
+│   ├── preload/                 # Electron context bridge
+│   └── renderer/                # React + Tailwind UI
+│       └── components/
+│           ├── ChatView.tsx     # Main chat interface
+│           ├── ConfigModal.tsx  # Settings dialog
+│           ├── Sidebar.tsx      # Navigation
+│           └── TracePanel.tsx   # AI reasoning trace
+├── .claude/skills/              # Built-in skill definitions
+├── resources/                   # Icons, binaries
+├── electron-builder.yml         # Build config
+└── package.json
 ```
 
 ---
 
-## 🗺️ Roadmap
-
-See our full **[ROADMAP.md](ROADMAP.md)** for detailed plans.
-
-**Completed:** Core installers · Filesystem sandboxing · VM isolation (WSL2/Lima) · Skills (PPTX/DOCX/PDF/XLSX) · MCP connectors · Multi-model support · Rich input · i18n
-
-**Coming next:** Memory optimization · Linux support · Plugin system · Computer use · Stable release
-
----
+<a id="faq"></a>
 
 ## ❓ FAQ
 
-**What is Open Cowork?**
-Open Cowork is a free, open-source desktop application that provides a local AI agent workspace. It wraps AI models (Claude, GPT, Gemini, DeepSeek, etc.) into a GUI with one-click installers for Windows and macOS — no terminal or coding knowledge required.
-
-**How is Open Cowork different from Claude Cowork?**
-Open Cowork is the open-source implementation of Claude Cowork. It adds multi-model support (not just Claude), GUI automation via computer use, remote control through Feishu/Slack, and VM-level sandbox isolation. See the [feature comparison table](#features) for details.
-
-**What AI models does Open Cowork support?**
-Claude (via Anthropic or OpenRouter), OpenAI-compatible APIs, and Chinese models including GLM (Zhipu AI), MiniMax, and Kimi. Any provider offering an OpenAI-compatible API endpoint can be configured.
-
 **Is Open Cowork free?**
-Yes. Open Cowork itself is completely free and open-source under the MIT license. You only need to pay for the AI model API usage from your chosen provider.
+Yes — MIT license, fully open source. You only pay for the AI model API (Anthropic, OpenRouter, etc.).
 
-**Does Open Cowork work on Linux?**
-Currently, Open Cowork provides pre-built installers for Windows and macOS only. Linux users can build from source — see the [Build from Source](#installation) section.
+**Does it send my data anywhere?**
+No. The app runs entirely on your machine. The only outbound traffic is your prompts going to the AI provider API you configured. No analytics, no telemetry, no third-party tracking.
 
-**How does sandbox isolation work?**
-Open Cowork offers multi-level protection: basic path-based restrictions on all platforms, and enhanced VM-level isolation using WSL2 (Windows) or Lima (macOS). When a VM is available, all commands execute inside an isolated Linux environment, protecting your host system.
+**macOS shows "app is damaged" or blocks the app — what do I do?**
+Run in Terminal: `xattr -d com.apple.quarantine /Applications/Open\ Cowork.app`
 
-**What are Skills and how do I create custom ones?**
-Skills are built-in workflows for specific tasks like generating PPTX, DOCX, PDF, or XLSX files. Open Cowork ships with default skills under `.claude/skills/` and includes a `skill-creator` tool to help you build your own custom skills.
+**What is the workspace folder?**
+It's the folder the AI is allowed to read and write. Choose a dedicated folder — the AI cannot access files outside it.
 
-**What is MCP and how does it work?**
-MCP (Model Context Protocol) lets AI connect to external tools and services. Open Cowork supports MCP connectors for browsers, Notion, and other desktop apps — extending the AI's capabilities beyond just file management and code.
+**Can I use a local model (Ollama)?**
+Yes. In Settings, set Base URL to `http://localhost:11434` and enter your Ollama model name. Make sure Ollama is running locally.
 
-**How do I set up remote control via Feishu or Slack?**
-Open Cowork supports remote control through Feishu (Lark) and Slack integration, allowing you to send commands and receive results from collaboration platforms. Check the app settings for remote control configuration.
+**How does the sandbox work?**
+With WSL2 (Windows) or Lima (macOS) installed, all shell commands the AI runs execute inside an isolated Linux VM. Even if the AI makes a mistake, it cannot touch your host system files outside the workspace.
 
-**Is my data safe? Does Open Cowork send data to external servers?**
-Open Cowork runs locally on your machine. Your files stay in your workspace. The only external communication is with the AI model API you configure (e.g., Anthropic, OpenRouter). No data is sent to Open Cowork servers.
+**What are Skills?**
+Skills are pre-built AI workflows (PPTX, DOCX, XLSX, PDF). The AI loads them automatically when you describe a relevant task. You can also create your own skills.
+
+**Does it work on Linux?**
+Pre-built installers are Windows and macOS only. Linux users can build from source.
 
 ---
 
 ## 🛠️ Contributing
 
-We welcome contributions! Whether it's a new Skill, a UI fix, or a security improvement:
-
-1. Fork the repo.
-2. Create a branch (`git checkout -b feature/NewSkill`).
-3. Submit a PR.
-
----
-
-## 💬 Community
-
-Join our community for support and discussion:
-
-- **Discord**: [Join our Discord server](https://discord.gg/pynjtQDf) — for real-time chat, support, and development discussion.
-- **WeChat**: Scan the QR code below to join our WeChat group (Chinese community).
-
-<p align="center">
-  <img src="resources/WeChat.jpg" alt="WeChat Group" width="200" />
-</p>
+1. Fork the repo
+2. Create a branch: `git checkout -b feature/my-feature`
+3. Commit and push
+4. Open a Pull Request
 
 ---
 
 ## 📄 License
 
 MIT © Open Cowork Team
-
----
-
-<p align="center">
-  Made with ❤️ by the Open Cowork Team with the help of opus4.5
-</p>
