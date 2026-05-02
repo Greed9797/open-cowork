@@ -2,66 +2,66 @@
   <img src="resources/logo.png" alt="Open Cowork Logo" width="280" />
 </p>
 
-<h1 align="center">Open Cowork — AI Agent Desktop App</h1>
+<h1 align="center">Open Cowork — App Desktop de Agente IA</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20macOS-blue" alt="Platform" />
-  <img src="https://img.shields.io/badge/License-MIT-green" alt="License" />
+  <img src="https://img.shields.io/badge/Plataforma-Windows%20%7C%20macOS-blue" alt="Plataforma" />
+  <img src="https://img.shields.io/badge/Licença-MIT-green" alt="Licença" />
   <img src="https://img.shields.io/badge/Electron-41.x-47848F?logo=electron" alt="Electron" />
   <img src="https://img.shields.io/badge/Node.js-22+-brightgreen" alt="Node.js" />
 </p>
 
 <p align="center">
-  <a href="#installation">⬇️ Download</a> •
-  <a href="#quick-start">🚀 Quick Start</a> •
-  <a href="#features">✨ Features</a> •
+  <a href="#instalacao">⬇️ Download</a> •
+  <a href="#quick-start">🚀 Primeiros Passos</a> •
+  <a href="#funcionalidades">✨ Funcionalidades</a> •
   <a href="#skills">🧰 Skills</a> •
   <a href="#faq">❓ FAQ</a>
 </p>
 
 ---
 
-Open Cowork is a free, open-source AI agent desktop app for Windows and macOS. It wraps Claude, OpenAI, Gemini and other models into a user-friendly GUI — no coding required. Key capabilities: VM-level sandbox isolation (WSL2 on Windows, Lima on macOS), built-in Skills for generating PPTX, DOCX, XLSX and PDF, MCP integration for browsers and Notion, GUI automation via computer use, and remote control via Telegram.
+O Open Cowork é um app desktop gratuito e open source para Windows e macOS. Ele integra Claude, OpenAI, Gemini e outros modelos em uma interface gráfica simples — sem necessidade de programação. Principais recursos: isolamento em VM (WSL2 no Windows, Lima no macOS), Skills integradas para gerar PPTX, DOCX, XLSX e PDF, integração via MCP com navegadores e Notion, automação de interface gráfica por computer use e controle remoto via Telegram.
 
 ---
 
-## 📋 System Requirements
+## 📋 Requisitos do Sistema
 
-|                  | Windows                        | macOS                          |
-| ---------------- | ------------------------------ | ------------------------------ |
-| **OS**           | Windows 10 / 11 (64-bit)       | macOS 12 Monterey or later     |
-| **Architecture** | x64                            | Apple Silicon (M1+)            |
-| **RAM**          | 4 GB minimum, 8 GB recommended | 4 GB minimum, 8 GB recommended |
-| **Disk**         | ~500 MB free                   | ~500 MB free                   |
-| **Node.js**      | Not required (bundled)         | Not required (bundled)         |
+|                 | Windows                         | macOS                           |
+| --------------- | ------------------------------- | ------------------------------- |
+| **Sistema**     | Windows 10 / 11 (64-bit)        | macOS 12 Monterey ou superior   |
+| **Arquitetura** | x64                             | Apple Silicon (M1+)             |
+| **RAM**         | 4 GB mínimo, 8 GB recomendado   | 4 GB mínimo, 8 GB recomendado   |
+| **Disco**       | ~500 MB livres                  | ~500 MB livres                  |
+| **Node.js**     | Não necessário (incluso no app) | Não necessário (incluso no app) |
 
-> **Sandbox (optional but recommended):** WSL2 on Windows, Lima on macOS — see [Security Configuration](#security-configuration).
+> **Sandbox (opcional, recomendado):** WSL2 no Windows, Lima no macOS — veja [Configuração de Segurança](#seguranca).
 
 ---
 
-<a id="installation"></a>
+<a id="instalacao"></a>
 
-## ⬇️ Download & Install
+## ⬇️ Download e Instalação
 
 ### macOS
 
-**Step 1 — Download the DMG**
+**Passo 1 — Baixe o DMG**
 
-Go to the [Releases page](https://github.com/Greed9797/open-cowork/releases) and download `Open Cowork-<version>-mac-arm64.dmg`.
+Acesse a [página de Releases](https://github.com/Greed9797/open-cowork/releases) e baixe o arquivo `Open Cowork-<versão>-mac-arm64.dmg`.
 
-**Step 2 — Open the DMG**
+**Passo 2 — Abra o DMG**
 
-Double-click the `.dmg` file. Drag **Open Cowork** to your **Applications** folder.
+Dê dois cliques no arquivo `.dmg`. Arraste o **Open Cowork** para a pasta **Aplicativos**.
 
-**Step 3 — Bypass Gatekeeper (first launch only)**
+**Passo 3 — Libere o app no macOS (somente na primeira vez)**
 
-Because the app is not distributed through the Mac App Store, macOS will block it on first open. Fix:
+Por não estar na Mac App Store, o macOS pode bloquear o app na primeira abertura. Para resolver:
 
-1. Go to **System Settings → Privacy & Security**
-2. Scroll down to the blocked app warning
-3. Click **Open Anyway**
+1. Acesse **Configurações do Sistema → Privacidade e Segurança**
+2. Role até o aviso sobre o app bloqueado
+3. Clique em **Abrir Assim Mesmo**
 
-Or run once in Terminal to permanently allow:
+Ou execute no Terminal para liberar permanentemente:
 
 ```bash
 xattr -d com.apple.quarantine /Applications/Open\ Cowork.app
@@ -71,138 +71,138 @@ xattr -d com.apple.quarantine /Applications/Open\ Cowork.app
 
 ### Windows
 
-**Step 1 — Download the installer**
+**Passo 1 — Baixe o instalador**
 
-Go to the [Releases page](https://github.com/Greed9797/open-cowork/releases) and download `Open Cowork-<version>-win-x64.exe`.
+Acesse a [página de Releases](https://github.com/Greed9797/open-cowork/releases) e baixe o arquivo `Open Cowork-<versão>-win-x64.exe`.
 
-**Step 2 — Run the installer**
+**Passo 2 — Execute o instalador**
 
-Double-click the `.exe`. If Windows SmartScreen blocks it, click **More info → Run anyway**.
+Dê dois cliques no `.exe`. Se o Windows SmartScreen bloquear, clique em **Mais informações → Executar assim mesmo**.
 
-**Step 3 — Launch**
+**Passo 3 — Abra o app**
 
-Open Cowork appears in Start Menu and Desktop. Launch it and proceed to [Quick Start](#quick-start).
+O Open Cowork aparece no Menu Iniciar e na Área de Trabalho. Abra e siga para os [Primeiros Passos](#quick-start).
 
 ---
 
-### Build from Source
+### Compilar do Código-Fonte
 
-For developers who want to contribute or run a custom build:
+Para desenvolvedores que querem contribuir ou criar uma build personalizada:
 
 ```bash
-# Requirements: Node.js 22+, npm 10+
+# Requisitos: Node.js 22+, npm 10+
 git clone https://github.com/Greed9797/open-cowork.git
 cd open-cowork
 npm install
-npm run rebuild     # rebuild native modules for Electron
-npm run dev         # dev mode with hot-reload
-npm run build       # build installer to /release
+npm run rebuild     # recompila módulos nativos para o Electron
+npm run dev         # modo dev com hot-reload
+npm run build       # gera o instalador em /release
 ```
 
 ---
 
-<a id="security-configuration"></a>
+<a id="seguranca"></a>
 
-### 🔒 Security Configuration (Sandbox)
+### 🔒 Configuração de Segurança (Sandbox)
 
-Open Cowork supports multi-level sandboxing to isolate AI operations from your host system:
+O Open Cowork oferece isolamento em múltiplos níveis para proteger seu sistema:
 
-| Level        | Platform | Technology | What it does                                  |
-| ------------ | -------- | ---------- | --------------------------------------------- |
-| **Basic**    | All      | Path Guard | AI file access restricted to workspace folder |
-| **Enhanced** | Windows  | WSL2       | All commands run inside an isolated Linux VM  |
-| **Enhanced** | macOS    | Lima       | All commands run inside an isolated Linux VM  |
+| Nível          | Plataforma | Tecnologia | O que faz                                         |
+| -------------- | ---------- | ---------- | ------------------------------------------------- |
+| **Básico**     | Todos      | Path Guard | Acesso a arquivos restrito à pasta de trabalho    |
+| **Aprimorado** | Windows    | WSL2       | Todos os comandos executam dentro de uma VM Linux |
+| **Aprimorado** | macOS      | Lima       | Todos os comandos executam dentro de uma VM Linux |
 
-**macOS — enable Lima sandbox (recommended):**
+**macOS — ativar sandbox Lima (recomendado):**
 
 ```bash
 brew install lima
-# Open Cowork will auto-detect Lima and create a 'claude-sandbox' VM
+# O Open Cowork detecta o Lima automaticamente e cria a VM 'claude-sandbox'
 ```
 
-**Windows — enable WSL2 sandbox (recommended):**
+**Windows — ativar sandbox WSL2 (recomendado):**
 
-Install WSL2 from Microsoft: [https://docs.microsoft.com/en-us/windows/wsl/install](https://docs.microsoft.com/en-us/windows/wsl/install)
+Instale o WSL2 pela Microsoft: [https://docs.microsoft.com/pt-br/windows/wsl/install](https://docs.microsoft.com/pt-br/windows/wsl/install)
 
-Open Cowork auto-detects WSL2 — no extra configuration needed.
+O Open Cowork detecta o WSL2 automaticamente — nenhuma configuração adicional é necessária.
 
-> If no VM is available, the app falls back to path-based restrictions only.
+> Se nenhuma VM estiver disponível, o app usa apenas restrição por caminho de pasta.
 
 ---
 
 <a id="quick-start"></a>
 
-## 🚀 Quick Start
+## 🚀 Primeiros Passos
 
-### Step 1 — Get an API Key
+### Passo 1 — Obtenha uma Chave de API
 
-You need an API key from an AI provider. Recommended options:
+Você precisa de uma chave de API de um provedor de IA. Opções recomendadas:
 
-| Provider       | Where to get it                                         | Base URL                    | Best model                    |
-| -------------- | ------------------------------------------------------- | --------------------------- | ----------------------------- |
-| **Anthropic**  | [console.anthropic.com](https://console.anthropic.com/) | _(leave blank — default)_   | `claude-sonnet-4-6`           |
-| **OpenRouter** | [openrouter.ai](https://openrouter.ai/)                 | `https://openrouter.ai/api` | `anthropic/claude-sonnet-4-6` |
+| Provedor       | Onde obter                                              | Base URL                     | Modelo recomendado            |
+| -------------- | ------------------------------------------------------- | ---------------------------- | ----------------------------- |
+| **Anthropic**  | [console.anthropic.com](https://console.anthropic.com/) | _(deixe em branco — padrão)_ | `claude-sonnet-4-6`           |
+| **OpenRouter** | [openrouter.ai](https://openrouter.ai/)                 | `https://openrouter.ai/api`  | `anthropic/claude-sonnet-4-6` |
 
-> OpenRouter lets you use multiple providers with a single key and offers pay-as-you-go billing.
+> O OpenRouter permite usar vários provedores com uma única chave e cobrança por uso.
 
-### Step 2 — Configure the App
+### Passo 2 — Configure o App
 
-1. Open the app → click the **⚙️ Settings** icon (bottom left)
-2. Paste your **API Key**
-3. Set the **Base URL** if using OpenRouter (see table above)
-4. Set the **Model** name
-5. Click **Save**
+1. Abra o app → clique no ícone **⚙️ Configurações** (canto inferior esquerdo)
+2. Cole sua **Chave de API**
+3. Defina a **Base URL** se estiver usando OpenRouter (veja tabela acima)
+4. Informe o nome do **Modelo**
+5. Clique em **Salvar**
 
-### Step 3 — Choose a Workspace
+### Passo 3 — Escolha uma Pasta de Trabalho
 
-Click **Select Workspace** and choose a folder. The AI can only read/write files inside this folder.
+Clique em **Selecionar Pasta de Trabalho** e escolha uma pasta. A IA só pode ler e escrever arquivos dentro dessa pasta.
 
-> Create a dedicated folder like `~/ai-workspace` — don't point it at your entire home directory.
+> Crie uma pasta dedicada como `~/ai-workspace` — não aponte para toda a sua pasta pessoal.
 
-### Step 4 — Start Working
+### Passo 4 — Comece a Trabalhar
 
-Type a prompt and press Enter. Examples:
+Digite um comando e pressione Enter. Exemplos:
 
-> "Summarize all PDF files in this folder into a single Word document."
+> "Resuma todos os PDFs desta pasta em um único documento Word."
 
-> "Read sales_data.xlsx and create a PowerPoint with 5 slides showing key trends."
+> "Leia o arquivo vendas.xlsx e crie uma apresentação PowerPoint com 5 slides mostrando as principais tendências."
 
-> "Organize the files in this folder into subfolders by type and date."
-
----
-
-<a id="features"></a>
-
-## ✨ Features
-
-- **One-click install** — pre-built installers for Windows and macOS, no terminal needed
-- **Multi-model support** — Claude, OpenAI-compatible APIs, Gemini, DeepSeek, Ollama (local)
-- **Skills system** — built-in workflows for PPTX, DOCX, XLSX, PDF generation
-- **MCP integration** — connect to browsers, Notion, and other desktop apps
-- **GUI automation** — control desktop apps via computer use (recommended: Gemini Pro)
-- **Remote control** — send commands via Telegram bot
-- **VM-level sandbox** — WSL2 (Windows) and Lima (macOS) isolate all AI operations
-- **Multimodal input** — drag & drop images and files directly into chat
-- **Memory system** — AI remembers context across sessions
-- **Scheduled tasks** — run recurring AI tasks on a schedule
+> "Organize os arquivos desta pasta em subpastas por tipo e data."
 
 ---
 
-## 🎬 Demos
+<a id="funcionalidades"></a>
 
-### Folder Organization 📂
+## ✨ Funcionalidades
+
+- **Instalação em um clique** — instaladores prontos para Windows e macOS, sem precisar de terminal
+- **Suporte a múltiplos modelos** — Claude, APIs compatíveis com OpenAI, Gemini, DeepSeek, Ollama (local)
+- **Sistema de Skills** — fluxos prontos para gerar PPTX, DOCX, XLSX, PDF
+- **Integração MCP** — conecte a navegadores, Notion e outros apps
+- **Automação de interface** — controle apps desktop via computer use (recomendado: Gemini Pro)
+- **Controle remoto** — envie comandos via bot do Telegram
+- **Sandbox em VM** — WSL2 (Windows) e Lima (macOS) isolam todas as operações da IA
+- **Entrada multimodal** — arraste imagens e arquivos direto no chat
+- **Memória persistente** — a IA lembra o contexto entre sessões
+- **Tarefas agendadas** — execute tarefas de IA recorrentes automaticamente
+
+---
+
+## 🎬 Demonstrações
+
+### Organização de Arquivos 📂
 
 https://github.com/user-attachments/assets/dbeb0337-2d19-4b5d-a438-5220f2a87ca7
 
-### Generate PPT from Files 📊
+### Gerar PPT a partir de Arquivos 📊
 
 https://github.com/user-attachments/assets/30299ded-0260-468f-b11d-d282bb9c97f2
 
-### Generate XLSX Spreadsheets 📉
+### Gerar Planilhas XLSX 📉
 
 https://github.com/user-attachments/assets/f57b9106-4b2c-4747-aecd-a07f78af5dfc
 
-### GUI Automation 🖥
+### Automação de Interface Gráfica 🖥
 
 https://github.com/user-attachments/assets/75542c76-210f-414d-8182-1da988c148f2
 
@@ -210,47 +210,47 @@ https://github.com/user-attachments/assets/75542c76-210f-414d-8182-1da988c148f2
 
 <a id="skills"></a>
 
-## 🧰 Skills Library
+## 🧰 Skills
 
-Skills are pre-built AI workflows. They live under `.claude/skills/` and can be loaded on demand.
+Skills são fluxos de trabalho prontos para a IA. Ficam em `.claude/skills/` e são carregadas automaticamente conforme a necessidade.
 
-| Skill           | What it does                                        |
-| --------------- | --------------------------------------------------- |
-| `pptx`          | Generate PowerPoint presentations from data or text |
-| `docx`          | Create and edit Word documents                      |
-| `pdf`           | Read, fill, and extract from PDF files              |
-| `xlsx`          | Create and process Excel spreadsheets               |
-| `skill-creator` | Build your own custom skills                        |
+| Skill           | O que faz                                                |
+| --------------- | -------------------------------------------------------- |
+| `pptx`          | Gera apresentações PowerPoint a partir de dados ou texto |
+| `docx`          | Cria e edita documentos Word                             |
+| `pdf`           | Lê, preenche e extrai conteúdo de PDFs                   |
+| `xlsx`          | Cria e processa planilhas Excel                          |
+| `skill-creator` | Cria suas próprias skills personalizadas                 |
 
-You can add custom skills by creating a folder under `.claude/skills/<name>/` with a `SKILL.md` describing the workflow.
+Para adicionar uma skill personalizada, crie uma pasta em `.claude/skills/<nome>/` com um arquivo `SKILL.md` descrevendo o fluxo.
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Arquitetura
 
 ```
 open-cowork/
 ├── src/
-│   ├── main/                    # Electron main process (Node.js)
-│   │   ├── claude/              # Agent runner & AI SDK integration
-│   │   ├── config/              # Settings & model configuration
-│   │   ├── db/                  # SQLite persistence
-│   │   ├── memory/              # Cross-session memory
-│   │   ├── remote/              # Remote control (Telegram)
-│   │   ├── sandbox/             # Path guard & VM bridge
-│   │   ├── session/             # Session management
-│   │   ├── skills/              # Skill loader
-│   │   └── tools/               # Tool execution (file, web, shell)
-│   ├── preload/                 # Electron context bridge
-│   └── renderer/                # React + Tailwind UI
+│   ├── main/                    # Processo principal Electron (Node.js)
+│   │   ├── claude/              # Runner do agente e integração com SDK de IA
+│   │   ├── config/              # Configurações e modelos
+│   │   ├── db/                  # Persistência SQLite
+│   │   ├── memory/              # Memória entre sessões
+│   │   ├── remote/              # Controle remoto (Telegram)
+│   │   ├── sandbox/             # Path guard e bridge para VM
+│   │   ├── session/             # Gerenciamento de sessões
+│   │   ├── skills/              # Carregador de skills
+│   │   └── tools/               # Execução de ferramentas (arquivo, web, shell)
+│   ├── preload/                 # Context bridge do Electron
+│   └── renderer/                # Interface React + Tailwind
 │       └── components/
-│           ├── ChatView.tsx     # Main chat interface
-│           ├── ConfigModal.tsx  # Settings dialog
-│           ├── Sidebar.tsx      # Navigation
-│           └── TracePanel.tsx   # AI reasoning trace
-├── .claude/skills/              # Built-in skill definitions
-├── resources/                   # Icons, binaries
-├── electron-builder.yml         # Build config
+│           ├── ChatView.tsx     # Interface principal de chat
+│           ├── ConfigModal.tsx  # Painel de configurações
+│           ├── Sidebar.tsx      # Navegação lateral
+│           └── TracePanel.tsx   # Trace de raciocínio da IA
+├── .claude/skills/              # Definições das skills padrão
+├── resources/                   # Ícones e binários
+├── electron-builder.yml         # Configuração de build
 └── package.json
 ```
 
@@ -258,47 +258,47 @@ open-cowork/
 
 <a id="faq"></a>
 
-## ❓ FAQ
+## ❓ Perguntas Frequentes
 
-**Is Open Cowork free?**
-Yes — MIT license, fully open source. You only pay for the AI model API (Anthropic, OpenRouter, etc.).
+**O Open Cowork é gratuito?**
+Sim — licença MIT, totalmente open source. Você paga apenas pela API do modelo de IA que escolher (Anthropic, OpenRouter, etc.).
 
-**Does it send my data anywhere?**
-No. The app runs entirely on your machine. The only outbound traffic is your prompts going to the AI provider API you configured. No analytics, no telemetry, no third-party tracking.
+**O app envia meus dados para algum servidor?**
+Não. O app roda inteiramente na sua máquina. O único tráfego externo são seus prompts indo para a API do provedor de IA que você configurou. Sem analytics, sem telemetria, sem rastreamento.
 
-**macOS shows "app is damaged" or blocks the app — what do I do?**
-Run in Terminal: `xattr -d com.apple.quarantine /Applications/Open\ Cowork.app`
+**O macOS está bloqueando o app — o que faço?**
+Execute no Terminal: `xattr -d com.apple.quarantine /Applications/Open\ Cowork.app`
 
-**What is the workspace folder?**
-It's the folder the AI is allowed to read and write. Choose a dedicated folder — the AI cannot access files outside it.
+**O que é a pasta de trabalho?**
+É a pasta que a IA tem permissão para ler e escrever. Escolha uma pasta dedicada — a IA não consegue acessar arquivos fora dela.
 
-**Can I use a local model (Ollama)?**
-Yes. In Settings, set Base URL to `http://localhost:11434` and enter your Ollama model name. Make sure Ollama is running locally.
+**Posso usar um modelo local (Ollama)?**
+Sim. Nas configurações, defina a Base URL como `http://localhost:11434` e informe o nome do modelo Ollama. Certifique-se de que o Ollama está rodando localmente.
 
-**How does the sandbox work?**
-With WSL2 (Windows) or Lima (macOS) installed, all shell commands the AI runs execute inside an isolated Linux VM. Even if the AI makes a mistake, it cannot touch your host system files outside the workspace.
+**Como funciona o sandbox?**
+Com WSL2 (Windows) ou Lima (macOS) instalado, todos os comandos que a IA executa rodam dentro de uma VM Linux isolada. Mesmo que a IA cometa um erro, ela não consegue tocar nos arquivos do seu sistema fora da pasta de trabalho.
 
-**What are Skills?**
-Skills are pre-built AI workflows (PPTX, DOCX, XLSX, PDF). The AI loads them automatically when you describe a relevant task. You can also create your own skills.
+**O que são Skills?**
+Skills são fluxos de trabalho prontos (PPTX, DOCX, XLSX, PDF). A IA as carrega automaticamente quando você descreve uma tarefa relacionada. Você também pode criar suas próprias skills.
 
-**Does it work on Linux?**
-Pre-built installers are Windows and macOS only. Linux users can build from source.
-
----
-
-## 🛠️ Contributing
-
-1. Fork the repo
-2. Create a branch: `git checkout -b feature/my-feature`
-3. Commit and push
-4. Open a Pull Request
+**Funciona no Linux?**
+Os instaladores prontos são apenas para Windows e macOS. Usuários Linux podem compilar do código-fonte.
 
 ---
 
-## 📄 License
+## 🛠️ Contribuindo
 
-MIT © Open Cowork Team — All rights reserved.
+1. Faça um fork do repositório
+2. Crie uma branch: `git checkout -b feature/minha-feature`
+3. Faça o commit e o push
+4. Abra um Pull Request
 
 ---
 
-> This distribution is maintained by **W3 LABS**, based on the original work by the [Open Cowork](https://github.com/OpenCoworkAI/open-cowork) team. All intellectual property rights belong to the Open Cowork Team.
+## 📄 Licença
+
+MIT © Open Cowork Team — Todos os direitos reservados.
+
+---
+
+> Esta distribuição é mantida pelo **W3 LABS**, com base no trabalho original do time do [Open Cowork](https://github.com/OpenCoworkAI/open-cowork). Todos os direitos de propriedade intelectual pertencem ao Open Cowork Team.
