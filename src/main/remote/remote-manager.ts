@@ -662,19 +662,19 @@ export class RemoteManager extends EventEmitter {
       if (safeTools.includes(toolName)) {
         log('[RemoteManager] Auto-approving safe tool:', toolName);
         // Send notification to user
-        await this.doSendToChannel(channelInfo, `🔧 自动执行: **${toolName}**`);
+        await this.doSendToChannel(channelInfo, `🔧 Auto-executing: **${toolName}**`);
         return { allow: true };
       }
     }
 
     // Build permission request message
-    let messageText = '⚠️ **需要你的授权**\n\n';
-    messageText += `工具: **${toolName}**\n\n`;
-    messageText += `参数:\n\`\`\`json\n${JSON.stringify(input, null, 2)}\n\`\`\`\n\n`;
+    let messageText = '⚠️ **Authorization required**\n\n';
+    messageText += `Tool: **${toolName}**\n\n`;
+    messageText += `Parameters:\n\`\`\`json\n${JSON.stringify(input, null, 2)}\n\`\`\`\n\n`;
     messageText += `---\n`;
-    messageText += `回复 "允许" 或 "y" 授权\n`;
-    messageText += `回复 "拒绝" 或 "n" 拒绝\n`;
-    messageText += `回复 "始终允许" 记住此授权`;
+    messageText += `Reply "allow" or "y" to authorize\n`;
+    messageText += `Reply "deny" or "n" to reject\n`;
+    messageText += `Reply "always" to remember this authorization`;
 
     // Store pending interaction
     const interaction: RemoteInteraction = {
@@ -714,14 +714,9 @@ export class RemoteManager extends EventEmitter {
     return new Promise((resolve) => {
       this.interactionResolvers.set(toolUseId, (response) => {
         const lowerResponse = response.toLowerCase().trim();
-        if (
-          lowerResponse === '允许' ||
-          lowerResponse === 'y' ||
-          lowerResponse === 'yes' ||
-          lowerResponse === '是'
-        ) {
+        if (lowerResponse === 'allow' || lowerResponse === 'y' || lowerResponse === 'yes') {
           resolve({ allow: true });
-        } else if (lowerResponse === '始终允许' || lowerResponse === 'always') {
+        } else if (lowerResponse === 'always') {
           resolve({ allow: true, remember: true });
         } else {
           resolve({ allow: false });
@@ -828,7 +823,7 @@ export class RemoteManager extends EventEmitter {
 
     // Handle "跳过" response
     if (
-      messageText.toLowerCase().trim() === '跳过' ||
+      messageText.toLowerCase().trim() === 'skip' ||
       messageText.toLowerCase().trim() === 'skip'
     ) {
       return '{}';
@@ -1059,14 +1054,16 @@ export class RemoteManager extends EventEmitter {
   }
 
   /**
-   * Clear session response buffer (call when session ends)
-   * Flushes any pending messages before clearing
+   * Clear session response buffer (call when session turn ends)
+   * Flushes any pending messages before clearing.
+   * Session ID mappings are intentionally kept so subsequent messages
+   * from the same remote user continue the same conversation.
    */
   async clearSessionBuffer(actualSessionId: string): Promise<void> {
     // First flush any pending messages
     await this.flushResponseBuffer(actualSessionId);
 
-    // Then clear the buffer
+    // Then clear only the per-turn buffer state (not the session ID mappings)
     this.responseBuffers.delete(actualSessionId);
     this.sentMessageHashes.delete(actualSessionId);
     const timer = this.sendTimers.get(actualSessionId);
@@ -1074,20 +1071,9 @@ export class RemoteManager extends EventEmitter {
       clearTimeout(timer);
       this.sendTimers.delete(actualSessionId);
     }
-
-    // Clean up session mappings
-    const sessionId = this.sessionIdMapping.get(actualSessionId);
-    this.sessionIdMapping.delete(actualSessionId);
-    if (sessionId) {
-      for (const [key, value] of this.reverseSessionIdMapping) {
-        if (value === actualSessionId) {
-          this.reverseSessionIdMapping.delete(key);
-          break;
-        }
-      }
-      this.sessionChannelMapping.delete(sessionId);
-      this.sessionOwnerMapping.delete(sessionId);
-    }
+    // Note: sessionIdMapping, reverseSessionIdMapping, sessionChannelMapping,
+    // and sessionOwnerMapping are kept alive so the next message from this
+    // remote user routes to the same session via continueSession.
   }
 
   // ============================================================================
