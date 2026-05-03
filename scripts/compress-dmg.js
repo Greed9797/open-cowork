@@ -67,12 +67,22 @@ module.exports = async function afterAllArtifactBuild(buildResult) {
         console.log(`  Added Applications symlink for drag-to-install UX`);
       }
 
+      // Detach and delete any existing DMG at the target path to avoid
+      // "Resource busy" when electron-builder's own dmg step runs first.
+      if (fs.existsSync(dmgPath)) {
+        try {
+          execSync(`hdiutil detach "${dmgPath}" -quiet 2>/dev/null || true`, { stdio: 'pipe' });
+        } catch {}
+        fs.unlinkSync(dmgPath);
+        console.log(`  Removed existing DMG at target path`);
+      }
+
       // Create ULMO DMG directly (no intermediate UDZO → convert step)
       // Safe: all paths are build-time artifact paths from electron-builder
       console.log(`  Creating ULMO DMG (this may take a few minutes)...`);
       execSync(
         `hdiutil create -volname "${productName}" -srcfolder "${macDir}" ` +
-        `-ov -format ULMO -imagekey lzma-level=5 "${dmgPath}"`,
+        `-format ULMO -imagekey lzma-level=5 "${dmgPath}"`,
         { stdio: 'inherit' }
       );
 
