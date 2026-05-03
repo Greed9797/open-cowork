@@ -13,6 +13,7 @@ import {
   Globe,
   RefreshCw,
   X,
+  FileArchive,
 } from 'lucide-react';
 import type { Skill, PluginCatalogItemV2, InstalledPlugin, PluginComponentKind } from '../../types';
 import { useAppStore } from '../../store';
@@ -244,6 +245,24 @@ export function SettingsSkills({ isActive }: { isActive: boolean }) {
         await loadSkills();
         setError(null);
         setSuccess(null);
+      }
+    } catch (err) {
+      setError({ text: err instanceof Error ? err.message : t('skills.failedToInstall') });
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleInstallSkillFile() {
+    try {
+      const filePath = await window.electronAPI.selectSkillFile();
+      if (!filePath) return;
+      setIsLoading(true);
+      const result = await window.electronAPI.skills.install(filePath);
+      if (result.success) {
+        await loadSkills();
+        setError(null);
+        setSuccess({ text: `Skill "${result.skill.name}" instalada com sucesso.` });
       }
     } catch (err) {
       setError({ text: err instanceof Error ? err.message : t('skills.failedToInstall') });
@@ -520,6 +539,14 @@ export function SettingsSkills({ isActive }: { isActive: boolean }) {
           >
             <Plus className="w-5 h-5" />
             {t('skills.installSkillFromFolder')}
+          </button>
+          <button
+            onClick={handleInstallSkillFile}
+            disabled={isLoading}
+            className="w-full py-3 px-4 rounded-lg border-2 border-dashed border-border-subtle hover:border-accent hover:bg-accent/5 transition-all flex items-center justify-center gap-2 text-text-secondary hover:text-accent disabled:opacity-50"
+          >
+            <FileArchive className="w-5 h-5" />
+            Instalar de arquivo .skill
           </button>
         </div>
       </SettingsContentSection>

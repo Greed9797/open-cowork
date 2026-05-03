@@ -147,6 +147,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // Select files using native dialog
   selectFiles: (): Promise<string[]> => ipcRenderer.invoke('dialog.selectFiles'),
+  selectSkillFile: (): Promise<string | null> => ipcRenderer.invoke('dialog.selectSkillFile'),
 
   artifacts: {
     listRecentFiles: (
@@ -459,6 +460,7 @@ declare global {
       openExternal: (url: string) => Promise<boolean>;
       showItemInFolder: (filePath: string, cwd?: string) => Promise<boolean>;
       selectFiles: () => Promise<string[]>;
+      selectSkillFile: () => Promise<string | null>;
       artifacts: {
         listRecentFiles: (
           cwd: string,

@@ -1399,6 +1399,16 @@ ipcMain.handle('dialog.selectFiles', async () => {
   return result.filePaths;
 });
 
+ipcMain.handle('dialog.selectSkillFile', async () => {
+  const result = await dialog.showOpenDialog({
+    title: 'Selecionar arquivo de skill (.skill)',
+    filters: [{ name: 'Skill Package', extensions: ['skill'] }],
+    properties: ['openFile'],
+  });
+  if (result.canceled) return null;
+  return result.filePaths[0] ?? null;
+});
+
 // Config IPC handlers
 ipcMain.handle('config.get', () => {
   try {
@@ -1751,9 +1761,34 @@ ipcMain.handle('skills.install', async (_event, skillPath: string) => {
     if (!skillsManager) {
       throw new Error('SkillsManager not initialized');
     }
-    const skill = await skillsManager.installSkill(skillPath);
-    sessionManager?.invalidateSkillsSetup();
-    return { success: true, skill };
+
+    let resolvedPath = skillPath;
+    let tempDir: string | null = null;
+
+    if (skillPath.toLowerCase().endsWith('.skill')) {
+      const { mkdtempSync } = await import('node:fs');
+      const { tmpdir } = await import('node:os');
+      const AdmZip = (await import('adm-zip')).default;
+      tempDir = mkdtempSync(join(tmpdir(), 'occ-skill-'));
+      const zip = new AdmZip(skillPath);
+      zip.extractAllTo(tempDir, true);
+      // find the extracted folder (first directory inside tempDir)
+      const { readdirSync, statSync } = await import('node:fs');
+      const entries = readdirSync(tempDir);
+      const subDir = entries.find((e) => statSync(join(tempDir!, e)).isDirectory());
+      resolvedPath = subDir ? join(tempDir, subDir) : tempDir;
+    }
+
+    try {
+      const skill = await skillsManager.installSkill(resolvedPath);
+      sessionManager?.invalidateSkillsSetup();
+      return { success: true, skill };
+    } finally {
+      if (tempDir) {
+        const { rmSync } = await import('node:fs');
+        rmSync(tempDir, { recursive: true, force: true });
+      }
+    }
   } catch (error) {
     logError('[Skills] Error installing skill:', error);
     throw error;
