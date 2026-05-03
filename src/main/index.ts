@@ -1590,6 +1590,56 @@ ipcMain.handle('config.discover-local', async (_event, payload?: { baseUrl?: str
   }
 });
 
+ipcMain.handle(
+  'config.export',
+  async (_event, password: string): Promise<{ ok: boolean; error?: string }> => {
+    try {
+      const { encryptConfig } = await import('./config/config-export');
+      const fullConfig = configStore.getAll();
+      const payload = {
+        configSets: fullConfig.configSets,
+        activeConfigSetId: fullConfig.activeConfigSetId,
+      };
+      const encrypted = encryptConfig(payload, password);
+      const { filePath } = await dialog.showSaveDialog({
+        title: 'Exportar Configuração',
+        defaultPath: `opencowork-config-${Date.now()}.occ`,
+        filters: [{ name: 'Open Cowork Config', extensions: ['occ'] }],
+      });
+      if (!filePath) return { ok: false, error: 'Cancelado' };
+      const { writeFileSync } = await import('node:fs');
+      writeFileSync(filePath, encrypted, 'utf8');
+      return { ok: true };
+    } catch (error) {
+      logError('[Config] Export error:', error);
+      return { ok: false, error: error instanceof Error ? error.message : String(error) };
+    }
+  }
+);
+
+ipcMain.handle(
+  'config.import',
+  async (_event, password: string): Promise<{ ok: boolean; error?: string }> => {
+    try {
+      const { filePaths } = await dialog.showOpenDialog({
+        title: 'Importar Configuração',
+        filters: [{ name: 'Open Cowork Config', extensions: ['occ'] }],
+        properties: ['openFile'],
+      });
+      if (!filePaths.length) return { ok: false, error: 'Cancelado' };
+      const { readFileSync } = await import('node:fs');
+      const fileContent = readFileSync(filePaths[0], 'utf8');
+      const { decryptConfig } = await import('./config/config-export');
+      const payload = decryptConfig(fileContent, password);
+      configStore.importConfigSets(payload.configSets, payload.activeConfigSetId);
+      return { ok: true };
+    } catch (error) {
+      logError('[Config] Import error:', error);
+      return { ok: false, error: error instanceof Error ? error.message : String(error) };
+    }
+  }
+);
+
 // MCP Server IPC handlers
 ipcMain.handle('mcp.getServers', () => {
   try {

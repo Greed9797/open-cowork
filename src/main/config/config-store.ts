@@ -1312,6 +1312,25 @@ export class ConfigStore {
     return this.getAll();
   }
 
+  importConfigSets(sets: ApiConfigSet[], activeConfigSetId: string): AppConfig {
+    const current = this.getAll();
+    const normalized = this.normalizeConfigSets(sets, {
+      provider: current.provider,
+      customProtocol: normalizeCustomProtocol(
+        current.customProtocol,
+        defaultProtocolForProvider(current.provider)
+      ),
+      activeProfileKey: current.activeProfileKey,
+      profiles: current.profiles as Record<ProviderProfileKey, ProviderProfile>,
+      enableThinking: current.enableThinking,
+    });
+    const activeId = normalized.some((s) => s.id === activeConfigSetId)
+      ? activeConfigSetId
+      : normalized[0].id;
+    this.saveConfig(this.composeProjectedConfig(current, normalized, activeId));
+    return this.getAll();
+  }
+
   /**
    * Update multiple config values
    */

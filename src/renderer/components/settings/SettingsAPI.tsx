@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 import {
   Key,
   Plug,
@@ -9,6 +10,8 @@ import {
   AlertCircle,
   CheckCircle,
   RefreshCw,
+  Upload,
+  Download,
 } from 'lucide-react';
 import { useApiConfigState } from '../../hooks/useApiConfigState';
 import { useDualModelConfig } from '../../hooks/useDualModelConfig';
@@ -26,6 +29,49 @@ interface ModelOptionItem {
 export function SettingsAPI() {
   const { t } = useTranslation();
   const dual = useDualModelConfig();
+  const [exportPassword, setExportPassword] = useState('');
+  const [importPassword, setImportPassword] = useState('');
+  const [exportStatus, setExportStatus] = useState<{ ok: boolean; msg: string } | null>(null);
+  const [importStatus, setImportStatus] = useState<{ ok: boolean; msg: string } | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+
+  const handleExport = async () => {
+    if (!exportPassword.trim()) return;
+    setIsExporting(true);
+    setExportStatus(null);
+    try {
+      const result = await window.electronAPI.config.exportConfig(exportPassword);
+      if (result.ok) {
+        setExportStatus({ ok: true, msg: 'Configuração exportada com sucesso.' });
+        setExportPassword('');
+      } else {
+        setExportStatus({ ok: false, msg: result.error || 'Erro ao exportar.' });
+      }
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleImport = async () => {
+    if (!importPassword.trim()) return;
+    setIsImporting(true);
+    setImportStatus(null);
+    try {
+      const result = await window.electronAPI.config.importConfig(importPassword);
+      if (result.ok) {
+        setImportStatus({
+          ok: true,
+          msg: 'Configuração importada com sucesso. Reinicie o app para aplicar.',
+        });
+        setImportPassword('');
+      } else {
+        setImportStatus({ ok: false, msg: result.error || 'Erro ao importar.' });
+      }
+    } finally {
+      setIsImporting(false);
+    }
+  };
   const {
     provider,
     customProtocol,
@@ -587,6 +633,106 @@ export function SettingsAPI() {
               </>
             )}
           </button>
+        </div>
+      </div>
+
+      {/* Export / Import Config */}
+      <div className="space-y-4 py-5">
+        <div className="flex items-center gap-2 mb-1">
+          <Key className="w-4 h-4 text-text-secondary" />
+          <span className="text-sm font-semibold text-text-primary">
+            Exportar / Importar Configuração
+          </span>
+        </div>
+        <p className="text-xs text-text-secondary">
+          Compartilhe suas chaves de API com o time. O arquivo é criptografado com AES-256 — só quem
+          tiver a senha consegue abrir.
+        </p>
+
+        {/* Export */}
+        <div className="space-y-2">
+          <label className="text-xs font-medium text-text-secondary uppercase tracking-wide">
+            Exportar
+          </label>
+          <div className="flex gap-2">
+            <input
+              type="password"
+              value={exportPassword}
+              onChange={(e) => setExportPassword(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') void handleExport();
+              }}
+              placeholder="Senha para proteger o arquivo"
+              className="flex-1 px-3 py-2 text-sm rounded-lg bg-bg-input border border-border-muted focus:outline-none focus:border-accent text-text-primary placeholder-text-muted"
+            />
+            <button
+              onClick={() => void handleExport()}
+              disabled={isExporting || !exportPassword.trim()}
+              className="px-4 py-2 rounded-lg bg-bg-card border border-border-muted text-sm font-medium text-text-primary hover:border-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+            >
+              {isExporting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Download className="w-4 h-4" />
+              )}
+              Exportar
+            </button>
+          </div>
+          {exportStatus && (
+            <p
+              className={`text-xs flex items-center gap-1 ${exportStatus.ok ? 'text-green-500' : 'text-red-500'}`}
+            >
+              {exportStatus.ok ? (
+                <CheckCircle className="w-3 h-3" />
+              ) : (
+                <AlertCircle className="w-3 h-3" />
+              )}
+              {exportStatus.msg}
+            </p>
+          )}
+        </div>
+
+        {/* Import */}
+        <div className="space-y-2">
+          <label className="text-xs font-medium text-text-secondary uppercase tracking-wide">
+            Importar
+          </label>
+          <div className="flex gap-2">
+            <input
+              type="password"
+              value={importPassword}
+              onChange={(e) => setImportPassword(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') void handleImport();
+              }}
+              placeholder="Senha do arquivo .occ"
+              className="flex-1 px-3 py-2 text-sm rounded-lg bg-bg-input border border-border-muted focus:outline-none focus:border-accent text-text-primary placeholder-text-muted"
+            />
+            <button
+              onClick={() => void handleImport()}
+              disabled={isImporting || !importPassword.trim()}
+              className="px-4 py-2 rounded-lg bg-bg-card border border-border-muted text-sm font-medium text-text-primary hover:border-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+            >
+              {isImporting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Upload className="w-4 h-4" />
+              )}
+              Importar
+            </button>
+          </div>
+          {importStatus && (
+            <p
+              className={`text-xs flex items-center gap-1 ${importStatus.ok ? 'text-green-500' : 'text-red-500'}`}
+            >
+              {importStatus.ok ? (
+                <CheckCircle className="w-3 h-3" />
+              ) : (
+                <AlertCircle className="w-3 h-3" />
+              )}
+              {importStatus.msg}
+            </p>
+          )}
         </div>
       </div>
     </div>

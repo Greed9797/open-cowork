@@ -186,6 +186,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
       ipcRenderer.invoke('config.diagnose', input),
     discoverLocal: (payload?: { baseUrl?: string }): Promise<LocalOllamaDiscoveryResult> =>
       ipcRenderer.invoke('config.discover-local', payload),
+    exportConfig: (password: string): Promise<{ ok: boolean; error?: string }> =>
+      ipcRenderer.invoke('config.export', password),
+    importConfig: (password: string): Promise<{ ok: boolean; error?: string }> =>
+      ipcRenderer.invoke('config.import', password),
   },
 
   // Window control methods
@@ -482,6 +486,8 @@ declare global {
         }) => Promise<ProviderModelInfo[]>;
         diagnose: (input: DiagnosticInput) => Promise<DiagnosticResult>;
         discoverLocal: (payload?: { baseUrl?: string }) => Promise<LocalOllamaDiscoveryResult>;
+        exportConfig: (password: string) => Promise<{ ok: boolean; error?: string }>;
+        importConfig: (password: string) => Promise<{ ok: boolean; error?: string }>;
       };
       window: {
         minimize: () => void;
