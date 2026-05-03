@@ -875,10 +875,9 @@ app
         },
       ]);
       app.dock?.setMenu(dockMenu);
-      const dockIconPath = app.isPackaged
-        ? join(process.resourcesPath, 'icon.png')
-        : join(__dirname, '../../resources/icon.png');
-      app.dock?.setIcon(dockIconPath);
+      if (!app.isPackaged) {
+        app.dock?.setIcon(join(__dirname, '../../resources/icon.png'));
+      }
     }
 
     // macOS: send initial system theme to renderer
