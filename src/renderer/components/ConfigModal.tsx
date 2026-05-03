@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   X,
   Key,
@@ -10,6 +10,8 @@ import {
   Edit3,
   Plug,
   RefreshCw,
+  Upload,
+  Download,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { AppConfig, ApiTestResult } from '../types';
@@ -45,6 +47,49 @@ export function ConfigModal({
   isFirstRun,
 }: ConfigModalProps) {
   const { t } = useTranslation();
+  const [exportPassword, setExportPassword] = useState('');
+  const [importPassword, setImportPassword] = useState('');
+  const [exportStatus, setExportStatus] = useState<{ ok: boolean; msg: string } | null>(null);
+  const [importStatus, setImportStatus] = useState<{ ok: boolean; msg: string } | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+
+  const handleExport = async () => {
+    if (!exportPassword.trim()) return;
+    setIsExporting(true);
+    setExportStatus(null);
+    try {
+      const result = await window.electronAPI.config.exportConfig(exportPassword);
+      if (result.ok) {
+        setExportStatus({ ok: true, msg: 'Configuração exportada com sucesso.' });
+        setExportPassword('');
+      } else {
+        setExportStatus({ ok: false, msg: result.error || 'Erro ao exportar.' });
+      }
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleImport = async () => {
+    if (!importPassword.trim()) return;
+    setIsImporting(true);
+    setImportStatus(null);
+    try {
+      const result = await window.electronAPI.config.importConfig(importPassword);
+      if (result.ok) {
+        setImportStatus({
+          ok: true,
+          msg: 'Configuração importada. Reinicie o app para aplicar.',
+        });
+        setImportPassword('');
+      } else {
+        setImportStatus({ ok: false, msg: result.error || 'Erro ao importar.' });
+      }
+    } finally {
+      setIsImporting(false);
+    }
+  };
   const {
     provider,
     customProtocol,
@@ -360,8 +405,12 @@ export function ConfigModal({
                   >
                     <Edit3 className="w-3 h-3" />
                     {isOllamaMode
-                      ? (useCustomModel ? t('api.useDetectedModels') : t('api.manualModel'))
-                      : (useCustomModel ? t('api.usePreset') : t('api.custom'))}
+                      ? useCustomModel
+                        ? t('api.useDetectedModels')
+                        : t('api.manualModel')
+                      : useCustomModel
+                        ? t('api.usePreset')
+                        : t('api.custom')}
                   </button>
                 )}
               </div>
@@ -486,6 +535,92 @@ export function ConfigModal({
                 </>
               )}
             </button>
+
+            {/* Export / Import Config */}
+            <div className="border-t border-border-muted pt-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <Key className="w-4 h-4 text-text-secondary" />
+                <span className="text-sm font-semibold text-text-primary">
+                  Exportar / Importar Configuração
+                </span>
+              </div>
+              <p className="text-xs text-text-secondary">
+                Compartilhe chaves com o time. Arquivo criptografado com AES-256 — só quem tiver a
+                senha consegue abrir.
+              </p>
+              <div className="flex gap-2">
+                <input
+                  type="password"
+                  value={exportPassword}
+                  onChange={(e) => setExportPassword(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') void handleExport();
+                  }}
+                  placeholder="Senha para exportar"
+                  className="flex-1 px-3 py-2 text-sm rounded-lg bg-background border border-border text-text-primary placeholder-text-muted focus:outline-none focus:border-accent"
+                />
+                <button
+                  onClick={() => void handleExport()}
+                  disabled={isExporting || !exportPassword.trim()}
+                  className="px-3 py-2 rounded-lg border border-border-muted text-sm text-text-secondary hover:border-accent disabled:opacity-50 flex items-center gap-1"
+                >
+                  {isExporting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  Exportar
+                </button>
+              </div>
+              {exportStatus && (
+                <p
+                  className={`text-xs flex items-center gap-1 ${exportStatus.ok ? 'text-green-500' : 'text-red-500'}`}
+                >
+                  {exportStatus.ok ? (
+                    <CheckCircle className="w-3 h-3" />
+                  ) : (
+                    <AlertCircle className="w-3 h-3" />
+                  )}
+                  {exportStatus.msg}
+                </p>
+              )}
+              <div className="flex gap-2">
+                <input
+                  type="password"
+                  value={importPassword}
+                  onChange={(e) => setImportPassword(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') void handleImport();
+                  }}
+                  placeholder="Senha para importar .occ"
+                  className="flex-1 px-3 py-2 text-sm rounded-lg bg-background border border-border text-text-primary placeholder-text-muted focus:outline-none focus:border-accent"
+                />
+                <button
+                  onClick={() => void handleImport()}
+                  disabled={isImporting || !importPassword.trim()}
+                  className="px-3 py-2 rounded-lg border border-border-muted text-sm text-text-secondary hover:border-accent disabled:opacity-50 flex items-center gap-1"
+                >
+                  {isImporting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Upload className="w-4 h-4" />
+                  )}
+                  Importar
+                </button>
+              </div>
+              {importStatus && (
+                <p
+                  className={`text-xs flex items-center gap-1 ${importStatus.ok ? 'text-green-500' : 'text-red-500'}`}
+                >
+                  {importStatus.ok ? (
+                    <CheckCircle className="w-3 h-3" />
+                  ) : (
+                    <AlertCircle className="w-3 h-3" />
+                  )}
+                  {importStatus.msg}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>
