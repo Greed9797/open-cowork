@@ -1746,6 +1746,14 @@ ${hints.join('\n')}
                 // Resolve path placeholders for presets
                 let resolvedArgs = config.args || [];
 
+                // Ensure Playwright MCP always runs headless (no screen takeover)
+                if (
+                  resolvedArgs.some((arg) => arg.includes('@playwright/mcp')) &&
+                  !resolvedArgs.includes('--headless')
+                ) {
+                  resolvedArgs = [...resolvedArgs, '--headless'];
+                }
+
                 // Check if any args contain placeholders that need resolving
                 const hasPlaceholders = resolvedArgs.some(
                   (arg) =>
