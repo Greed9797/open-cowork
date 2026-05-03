@@ -45,14 +45,14 @@ O Open Cowork é um app desktop gratuito e open source para Windows e macOS. Ele
 
 > **Qual arquivo baixar?**
 >
-> - Você está no **Mac com chip M1, M2 ou M3**? → Baixe o `.dmg`
+> - Você está no **Mac com chip Apple Silicon (M1, M2, M3 ou M4)**? → Baixe o `.dmg`
 > - Você está no **Windows** (qualquer versão recente)? → Baixe o `.exe`
 
 Acesse a **[página de Releases](https://github.com/Greed9797/open-cowork/releases)**, clique na versão mais recente e baixe o arquivo correspondente ao seu sistema.
 
 ---
 
-### 🍎 Instalação no macOS (Apple Silicon — M1/M2/M3)
+### 🍎 Instalação no macOS (Apple Silicon — M1/M2/M3/M4)
 
 #### Passo 1 — Baixe o arquivo `.dmg`
 
@@ -96,7 +96,7 @@ Abra o app. Você deve ver a tela de boas-vindas do Open Cowork. Se aparecer, a 
 > **Problemas comuns no macOS**
 >
 > - _"O arquivo está danificado"_ → Execute o Método 2 do Passo 3 acima.
-> - _O app abre mas fecha imediatamente_ → Verifique se seu Mac tem chip Apple Silicon (M1+). Este build não roda em Macs Intel.
+> - _O app abre mas fecha imediatamente_ → Verifique se seu Mac tem chip Apple Silicon (M1/M2/M3/M4). Este build **não roda em Macs Intel** (anterior a 2020).
 > - _Tela em branco_ → Aguarde 10–15 segundos. Na primeira abertura o app demora um pouco mais.
 
 ---
